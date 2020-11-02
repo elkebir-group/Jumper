@@ -1,0 +1,9 @@
+*.out
+*.png
+*.fasta
+*.fasta.fai
+*.inp
+*.lp
+*.csv
+*.dot
+*.tsv
