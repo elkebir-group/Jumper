@@ -88,10 +88,12 @@ class solveTranscription():
         lmin = solveTranscription.find_shortest_transcript_length(spliceEdges, spliceLengths, self.ref_length)
         self.chosen_paths = []
         
-        print('-'*50)
-        print(f"max phasing count is {max([count for _, _, count in self.graph.phasing])}")
-        print(f"total reads is {sum([count for _, _, count in self.graph.phasing])}")
-        print('-'*50)
+        
+        if self.verbose:
+            print('-'*50)
+            print(f"max phasing count is {max([count for _, _, count in self.graph.phasing])}")
+            print(f"total reads is {sum([count for _, _, count in self.graph.phasing])}")
+            print('-'*50)
         
         
         # function values and sampling points
@@ -117,13 +119,10 @@ class solveTranscription():
         while iter_count <= self.max_iter or flag in [1,2,3]:
 
             model = gp.Model(f"solveGreedyTranscription_{kdx}")
-            
             model.setParam(gp.GRB.Param.Threads, self.threads)
-            #if self.timelimit:
-            #    model.setParam(gp.GRB.Param.TimeLimit, self.timelimit)
-    
-        
-            
+            if self.timelimit:
+                model.setParam(gp.GRB.Param.TimeLimit, self.timelimit)
+
             c = model.addVars(len(self.chosen_paths), lb = 0, ub = 1, 
                               vtype = gp.GRB.CONTINUOUS, name="c")
             g = model.addVars(npaths, lb = 0, ub = 1, vtype = gp.GRB.CONTINUOUS, name = 'g')
@@ -145,7 +144,7 @@ class solveTranscription():
                 if edge not in observed_splice_edges:
                     for pid in range(npaths):
                         model.addConstr(w[spliceEdge2Index[edge], pid] == 0)
-                    
+
             # constraints
             # non-overlapping splice edges
             for idx1, edge1 in enumerate(spliceEdges):
@@ -289,8 +288,11 @@ class solveTranscription():
                 solG = model.getAttr('x', g)
                 solW = model.getAttr('x', w)
 
-                print(f"{solG}")
-                print(f"{solC}")
+                if self.verbose:
+                    print("solution G:")
+                    print(f"{solG}")
+                    print("solution C:")
+                    print(f"{solC}")
 
                 if flag == 1:
                     kdx += 1
@@ -306,9 +308,10 @@ class solveTranscription():
                     npaths = 0
                     npaths_added = self.add_path_to_chosen_with_expansion(solW, spliceEdges)
                     if npaths_added == 0:
-                        print('+'*50)
-                        print(f"no paths were added")
-                        print('+'*50)
+                        if self.verbose:
+                            print('+'*50)
+                            print(f"no paths were added")
+                            print('+'*50)
                         flag = 3
                     else:
                         #self.expand_all_paths()
@@ -330,11 +333,12 @@ class solveTranscription():
     
     def choose_best_k_paths(self, solC, kdx):
         
-        print("*"*50)
-        print(f"iteration {kdx}")
-        print(f"{solC}")
-        print(f"{[self.graph.getPathIndex(path) for path in self.chosen_paths]}")
-        print("*"*50)
+        if self.verbose:
+            print("*"*50)
+            print(f"iteration {kdx}")
+            print(f"{solC}")
+            print(f"{[self.graph.getPathIndex(path) for path in self.chosen_paths]}")
+            print("*"*50)
         
         assert(kdx <= len(solC))
         # chosen_indices = [i for i,v in sorted(solC.items(), key=lambda x: (-x[1], len([edge for edge in self.chosen_paths[x[0]] if edge.type == 'splice'])))][:kdx]
@@ -342,11 +346,12 @@ class solveTranscription():
 
         self.chosen_paths = [self.chosen_paths[i] for i in chosen_indices]
        
-        print("*"*50)
-        print(f"number of chosen paths = {len(self.chosen_paths)}")
-        print(f"{chosen_indices}")
-        print(f"{[self.graph.getPathIndex(path) for path in self.chosen_paths]}")
-        print("*"*50)
+        if self.verbose:
+            print("*"*50)
+            print(f"number of chosen paths = {len(self.chosen_paths)}")
+            print(f"{chosen_indices}")
+            print(f"{[self.graph.getPathIndex(path) for path in self.chosen_paths]}")
+            print("*"*50)
         
     def add_path_to_chosen_with_expansion(self, solW, spliceEdges):
         
@@ -397,10 +402,6 @@ class solveTranscription():
                 if case_path not in self.chosen_paths:
                     self.chosen_paths.append(case_path)
                     npaths_added += 1
-                    
-        print('&'*50)
-        print(f"added {npaths_added} paths")
-        print('&'*50)
               
     def add_path_to_chosen(self, solW, spliceEdges = None):
         
@@ -677,8 +678,6 @@ class solveTranscription():
         total_length = sum([weight * self.graph.getPathLength(path) 
                             for _, path, weight in self.solution])
 
-        print(f"{[(index, weight * total_reads * self.graph.getPathLength(path) / total_length) for index, path, weight in self.solution]}")
-        
         prefilter_number = len(self.solution)
         self.solution = [(index, path, weight)
                          for index, path , weight in self.solution 

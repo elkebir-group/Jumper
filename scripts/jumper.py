@@ -8,7 +8,6 @@ Created on Sun Aug  2 00:58:51 2020
 
 import pysam
 import pandas as pd
-import numpy as np
 import sys
 import argparse
 import statistics
@@ -563,7 +562,7 @@ class segmentGraph():
         # self.transcript_type.append("1ab")
         self.numTranscripts = len(self.transcripts)
         
-        print(f"number of trnascripts is {len(self.transcripts)}")
+        print(f"number of transcripts is {len(self.transcripts)}")
         print(f"number of transcript splice edges is {len(self.transcriptSpliceEdges)}")
         print('-'*50)
 
@@ -625,13 +624,10 @@ def main(args):
     else:
         phasing_reads = SJcounter.get_phasing_reads(args.bam, splice_edges.keys(), args.width, args.paired)
     
-    # for idx, (splus, sminus) in enumerate(phasing_reads.keys()):
-    #     print(f">phasing {idx} -- {phasing_reads[(splus, sminus)]}\n>>{splus}\n>>{sminus}")
-
-    print(f"number of splice edges -- {len(splice_edges)}")
-    print(f"number of phasing reads -- {len(phasing_reads)}")
-        
-    print(f"total number of reads -- {sum([val for val in phasing_reads.values()])}")
+    if args.verbose:
+        print(f"number of splice edges -- {len(splice_edges)}")
+        print(f"number of phasing reads -- {len(phasing_reads)}")
+        print(f"total number of reads -- {sum([val for val in phasing_reads.values()])}")
     
     if args.outputCSV:
         df_sj_reads.to_csv(args.outputCSV, sep='\t', index=False)
@@ -651,7 +647,8 @@ def main(args):
                               phasing = phasing_reads, verbose = args.verbose, phasing_threshold=args.phasing_threshold,
                               edge_threshold = args.sj_threshold, ref = ref, width=args.width)
 
-    print(f"number of ST paths -- {sampleGraph.getNumSTpaths()}")
+    if args.verbose:
+        print(f"number of ST paths -- {sampleGraph.getNumSTpaths()}")
 
     if args.outputDOT:
         sampleGraph.writeDOT(args.outputDOT)
@@ -715,16 +712,16 @@ if __name__ == "__main__":
     parser.add_argument("--outputTranscripts", type = str, help="output file for transcripts")
     parser.add_argument("-k", type=int, dest='numPaths', help="number of paths for the flow decomposition", default = 1)
     parser.add_argument("--outputBreakpoints", type=str, help="output file containing breakpoints")
-    parser.add_argument("--inputBreakpoints", type=str, help="input file contiaining breakpoints")
+    parser.add_argument("--inputBreakpoints", type=str, help="input file containing breakpoints")
     parser.add_argument("--outputEdges", type=str, help="output file containing graph edges")
-    parser.add_argument("--inputEdges", type=str, help="input file contiaining graph edges")
+    parser.add_argument("--inputEdges", type=str, help="input file containing graph edges")
     parser.add_argument("--outputDecomposition", type=str, help="output file for the decomposed non-canonical transcripts")
     parser.add_argument("--outputMatching", type=str, help="output file for the matching of phasing reads to inferred transcripts")    
-    parser.add_argument("--noverbose", dest="verbose", help="do not output statements from internal solvers [default is true]", action='store_false')
+    parser.add_argument("--noverbose", dest="verbose", help="do not output statements from internal solvers [default is false]", action='store_false')
     parser.add_argument("--threads", type=int, default = 1, help = 'number of threads allowed to be used')
     parser.set_defaults(verbose=True)
     parser.add_argument("--samplingFrequency", type = int, help="number of sampling points for the likelihood function", default = 4)
-    parser.add_argument("--timelimit", type=int, help="time limt for the gurobi solvers in seconds [1800]", default = 1800)
+    parser.add_argument("--timelimit", type=int, help="time limt for the gurobi solvers in seconds [None]", default = None)
     parser.add_argument("--greedy", type=str2bool, default=False, help="set greedy flag to TRUE")
     parser.add_argument("--maxIter", type=int, help="maximum iterations for the greedy algorithm [100]", default = 100)
     parser.add_argument("--outputGTF", type=str, help="output file in GTF format")
