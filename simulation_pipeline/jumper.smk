@@ -46,7 +46,7 @@ rule jumper:
         "--outputMatching {output.matching} "
         "--outputTranscripts {output.transcripts} "
         "--greedy True "
-        "--paired True --sj_threshold {params.sj_threshold} -k {params.npaths} --threads {params.nthreads} "
+        "--sj_threshold {params.sj_threshold} -k {params.npaths} --threads {params.nthreads} "
         "--timelimit {params.timelimit} "
         "--samplingFrequency {params.samplingFrequency} "
         "> {log.std} 2> {log.err}"
