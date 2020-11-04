@@ -1,0 +1,5 @@
+name: r_env
+channels:
+  - r
+dependencies:
+  - r=3.3.1

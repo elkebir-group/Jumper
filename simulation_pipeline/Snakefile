@@ -1,0 +1,41 @@
+configfile: "config.yaml"
+
+rule all:
+    input:
+        expand("reads/{sense}_{seed}", sense=config["senses"], seed=config["seeds"]),
+        #expand("transcripts/{sense}_{seed}.fasta", sense=config["senses"], seed=config["seeds"]),
+        #expand("transcripts/{sense}_{seed}_path_edges.out", sense=config["senses"], seed=config["seeds"]),
+        #expand("transcripts/{sense}_{seed}_readcounts.out", sense=config["senses"], seed=config["seeds"]),
+
+rule simulate_transcript:
+    input:
+        breakpointFile=config["sampleBreakpoints"],
+        edgeFile=config["sampleEdges"],
+    params:
+        refFile=config["fastaFile"],
+        npaths=config["npaths"],
+        nreads=config["nreads"]
+    output:
+        transcriptFasta="transcripts/{sense}_{seed}.fasta",
+        transcriptFile="transcripts/{sense}_{seed}_path_edges.out",
+        transcriptReadCounts="transcripts/{sense}_{seed}_readcounts.out",
+        phasingFile="transcripts/{sense}_{seed}_phasing.out",
+    shell:
+        "python simulate_segment_graph.py --npaths {params.npaths} --seed {wildcards.seed} --sense {wildcards.sense} "
+        "--inputBreakpoints {input.breakpointFile} --nreads {params.nreads} "
+        "--inputEdges {input.edgeFile} "
+        "--fasta {params.refFile} "
+        "--outputPaths {output.transcriptFile} --outputFasta {output.transcriptFasta} "
+        "--outputReadCounts {output.transcriptReadCounts} "
+        "--outputPhasing {output.phasingFile} "
+
+rule simulate_reads:
+    input:
+        transcriptFasta="transcripts/{sense}_{seed}.fasta",
+        transcriptReadCounts="transcripts/{sense}_{seed}_readcounts.out",
+    output:
+        outDir=directory("reads/{sense}_{seed}"),
+    params:
+        nreplicates=config["nreplicates"],
+    script:
+        "scripts/running_experiments.R"
