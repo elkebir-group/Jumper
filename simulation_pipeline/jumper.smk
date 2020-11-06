@@ -33,7 +33,6 @@ rule jumper:
         samplingFrequency=config["samplingFrequency"],
         timelimit=config["timelimit"],
         nthreads=config["nthreads"],
-        resolution=config["resolution"],
         sj_threshold=config["sj_threshold"]
     shell:
         "python jumper.py --fasta {params.refFile} --bam {input.bam} "
