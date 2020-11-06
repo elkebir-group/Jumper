@@ -19,7 +19,7 @@ from segment_graph_aux import *
 
 class mynode():
             
-    def __init__(self, name = None, left = None, right = None):
+    def __init__(self, name = None, left = None, right = None, length = 29903):
         if left is None and right is None:
             self.name = None
             self.left = None
@@ -30,7 +30,7 @@ class mynode():
             self.name = f"[start,{right}]"
         elif right is None and left is not None:
             self.left = left
-            self.right = 29903
+            self.right = length
             self.name = f"[{left},end]"
         else:
             assert(left <= right), "left must be <= right in mynode()"
@@ -77,12 +77,13 @@ class segmentGraph():
         
         self.nodes = []
         if len(breakpoints) > 0:
-            self.nodes.append(mynode(right=breakpoints[0]))
+            self.nodes.append(mynode(right=breakpoints[0], length = ref.lengths[0]))
             for idx in range(len(breakpoints)-1):
                 self.nodes.append(mynode(left=breakpoints[idx],
-                                         right=breakpoints[idx+1]))
+                                         right=breakpoints[idx+1],
+                                         length = ref.lengths[0]))
             if len(breakpoints) > 1:
-                self.nodes.append(mynode(left=breakpoints[-1]))
+                self.nodes.append(mynode(left=breakpoints[-1], length = ref.lengths[0]))
         
         self.edges = []
         key2edge = {}
@@ -425,8 +426,11 @@ class segmentGraph():
                     else:   
                         output.write(f">path_{pathIndex}:\n")
                 genome = ''
-                for edge in path: 
-                    genome += self.ref.fetch(self.ref.references[0], edge.left.left, edge.left.right)
+                for edge in path:
+                    if edge.left.left == 1:
+                        genome += self.ref.fetch(self.ref.references[0], 0, edge.left.right)
+                    else:
+                        genome += self.ref.fetch(self.ref.references[0], edge.left.left, edge.left.right)
                 genome += self.ref.fetch(self.ref.references[0], path[-1].right.left, path[-1].right.right)
                 output.write(f"{genome}\n")
 
