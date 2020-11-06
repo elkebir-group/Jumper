@@ -105,3 +105,6 @@ The output is similar to a fasta file format, where each transcript name is foll
                             time limt for the gurobi solvers in seconds [None]
       --maxIter MAXITER     maximum iterations for the greedy algorithm [100]
 
+### Example
+Please refer to `simulation_pipeline` for example case of using Jumper on simulated bam files.
+The Jumper usage is shown in the snakemake `simulation_pipeline/jumper.smk`.
