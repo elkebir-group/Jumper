@@ -2,8 +2,26 @@ configfile: "config.yaml"
 
 rule all:
     input:
+        config["ref_dir"] + "/SAindex",
         expand("bam/star/{sense}_{seed}/sample_{rep}.Aligned.out.bam", sense=config["senses"], seed=config["seeds"], rep=config["rep"]),
         expand("bam/star/{sense}_{seed}/sample_{rep}.Aligned.sortedByCoord.out.bam.bai", sense=config["senses"], seed=config["seeds"], rep=config["rep"]),
+
+
+rule STAR_index:
+    input:
+        ref=config["ref"],
+        gtf=config["gtf_annot"],
+    output: config["ref_dir"] + "/SAindex"
+    params:
+        length=config["read_length"]-1,
+        path=config["ref_dir"],
+    log: "log/star_index.log"
+    threads: 24
+    shell:
+        "STAR --runMode genomeGenerate --genomeDir {params.path} "
+        "--genomeFastaFiles {input.ref} --sjdbGTFfile {input.gtf} "
+        "--sjdbOverhang {params.length} --runThreadN {threads} &> {log} "
+
 
 rule STAR_align:
     input:
