@@ -673,9 +673,6 @@ def main(args):
 
         if solver.solve(args.greedy):
 
-            if args.cov_threshold > 0:
-                solver.filterSolution(args.cov_threshold)
-            
             solver.writeSolution(args.outputDecomposition)
             
             if args.outputMatching:
