@@ -1,4 +1,5 @@
-configfile: "config.yaml"
+#configfile: "config.yaml"
+configfile: "test.yaml"
 
 rule all:
     input:
@@ -12,7 +13,7 @@ rule simulate_transcript:
         breakpointFile=config["sampleBreakpoints"],
         edgeFile=config["sampleEdges"],
     params:
-        refFile=config["fastaFile"],
+        refFile=config["ref"],
         npaths=config["npaths"],
         nreads=config["nreads"]
     output:
