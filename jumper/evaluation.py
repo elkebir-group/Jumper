@@ -10,16 +10,10 @@ import pysam
 import pandas as pd
 import numpy as np
 import sys
-import subprocess
 import argparse
-import gurobipy as gp
-import cvxpy as cp
 from typing import List, Dict, Tuple, Optional
 from collections import Counter
-from scipy import stats
-import statistics
 import math
-import random
 import itertools
 
 import segment_graph
@@ -290,70 +284,6 @@ class evaluator():
 
         return [ self.path_jump_dict[k] for k in chosen_keys]
 
-    def get_k_correlation(self, k, key, length = 29903):
-
-        sorted_target = self.top_k_jump_list(k, length)
-        sorted_source = self.alternate_solutions[key].top_k_jump_list(len(self.alternate_solutions[key].path_jump_dict), length)
-
-#        print(f"target length is {len(sorted_target)}")
-#        print(f"source length is {len(sorted_source)}")
-#
-#        print(f"source jumps")
-#        for idx, jump in enumerate(sorted_source):
-#            print(f"{idx}\t{jump}")
-#        
-#        print(f"target jumps")
-#        for idx, jump in enumerate(sorted_target):
-#            print(f"{idx}\t{jump}")
-
-        y_list = []
-        for jdx, target_jumps in enumerate(sorted_target):
-            for idx, source_jumps in enumerate(sorted_source):
-                if evaluator.check_match(source_jumps, target_jumps):
-                    y_list.append(idx)
-                    break
-
-        x_list = [i+1 for i in range(len(y_list))]
-
-#        print(len(y_list))
-
-#        print(f"{x_list}")
-#        print(f"{y_list}")
-
-        return stats.spearmanr(x_list, y_list)[0]
-
-    def get_k_correlation_target(self, k, key, length = 29903):
-
-        sorted_target = self.top_k_jump_list(len(self.path_jump_dict), length)
-        sorted_source = self.alternate_solutions[key].top_k_jump_list(k, length)
-
-#        print(f"target length is {len(sorted_target)}")
-#        print(f"source length is {len(sorted_source)}")
-#
-#        print(f"source jumps")
-#        for idx, jump in enumerate(sorted_source):
-#            print(f"{idx}\t{jump}")
-#        
-#        print(f"target jumps")
-#        for idx, jump in enumerate(sorted_target):
-#            print(f"{idx}\t{jump}")
-
-        x_list = []
-        for idx, source_jumps in enumerate(sorted_source):
-            for jdx, target_jumps in enumerate(sorted_target):
-                if evaluator.check_match(source_jumps, target_jumps):
-                    x_list.append(jdx)
-                    break
-
-        y_list = [i+1 for i in range(len(x_list))]
-
-#        print(len(y_list))
-#        
-#        print(f"{x_list}")
-#        print(f"{y_list}")
-
-        return stats.spearmanr(x_list, y_list)[0]
-
     def getCaonicalCount(self, ref, tolerance = 6):
         canonical = 0
         noncanonical = 0
@@ -526,21 +456,3 @@ class evaluator():
                 false_neg += 1
 
         return false_neg
-    
-def main(args):
-
-    instance = evaluator(ground_fname = args.inputPaths)
-            
-if __name__ == "__main__":
-    
-    parser = argparse.ArgumentParser()
-    # parser.add_argument("-f", "--fasta", type=str, help="fasta file", required=True)    
-    # parser.add_argument("--inputBreakpoints", type=str, help="input file contiaining breakpoints", required=True)
-    # parser.add_argument("--inputEdges", type=str, help="input file contiaining graph edges", required=True)
-    parser.add_argument("--inputPaths", type=str, help="input file with ground truth paths", required=True)
-    # parser.add_argument("--inputReadCounts", type=str, help="input file with read counts from each path", required=True)
-    parser.add_argument("--noverbose", dest="verbose", help="do not output statements from internal solvers [default is true]", action='store_false')
-
-    args = parser.parse_args(None if sys.argv[1:] else ['-h'])
-
-    main(args)
