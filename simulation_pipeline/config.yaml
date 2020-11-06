@@ -30,16 +30,3 @@ timelimit: 1800
 nthreads: 1
 sj_threshold: 120
 ntranscripts: 50
-
-coverage_threshold:
-    - 0.001
-    - 1
-    - 2.5
-    - 5
-    - 7.5
-    - 10
-    - 25
-    - 50
-    - 75
-    - 100
-
