@@ -698,6 +698,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--bam", type=str, help="aligned bam file")
     parser.add_argument("-f", "--fasta", type=str, help="fasta file", required=True)
+    parser.add_argument("--paired", type=str2bool, default=True, help="is the bam file paired-end [True]")
     parser.add_argument("--min-base-qual", type=int, help="minimum base quality [20]", default=20)
     parser.add_argument("--min-mapping-qual", type=int, help="minimum mapping quality [20]", default=20)
     parser.add_argument("--min-snv-qual", type=int, help = "minimum snv quality [30]", default = 30)
@@ -731,5 +732,4 @@ if __name__ == "__main__":
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
 
     args.vcf = None
-    args.paired = True
     main(args)

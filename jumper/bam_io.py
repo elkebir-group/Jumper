@@ -79,6 +79,7 @@ class SpliceJunction():
         self.min_mapping_quality = min_mapping_qual
         self.min_snv_qual = min_snv_qual
         self.reference = pysam.FastaFile(reference)
+        self.refLength = self.reference.lengths[0]
 
     def identify_ORF(self, pos) -> str:
 
@@ -380,7 +381,7 @@ class SpliceJunction():
         count_5prime_3prime_pair = Counter()
 
         if paired:
-            for r1, r2 in read_pair_generator(bam, f"{self.contig}:1-29903"):
+            for r1, r2 in read_pair_generator(bam, f"{self.contig}:1-{self.refLength}"):
                 #sjs1, ref_pos1 = self.get_spliced_junctions_muts(r1, mutList)
                 #sjs2, _ = self.get_spliced_junctions_muts(r2, mutList)
                 _, sjs1, ref_pos1, _ = self.get_read_segments_junctions(r1)
@@ -418,7 +419,7 @@ class SpliceJunction():
         reject_count = 0
         if paired:
             mean_read_len = IncrementalAverage()
-            for reads in read_pair_generator(bam, f"{self.contig}:1-29903"):
+            for reads in read_pair_generator(bam, f"{self.contig}:1-{self.refLength}"):
                 s_plus = set()
                 s_minus = set()
 
@@ -459,6 +460,34 @@ class SpliceJunction():
                 # else:
                 #     reject_count += 1
                     #print(f"rejected : {s_plus} -- {s_minus}")
+        else:
+            for read in bam.fetch(self.contig, 0, self.refLength):
+                if read.mapping_quality < self.min_mapping_quality:
+                    continue
+
+                s_plus = set()
+                s_minus = set()
+
+                for read in reads:
+                    read_seg, sjs, _ = self.get_read_segments(read)
+
+                    for (left, right) in splice_edges:
+                        for (_5prime, _3prime) in read_seg:
+                            if (left < _3prime - width) and (right > _5prime):
+                                s_minus.add((left, right))
+                                break
+
+                        for (_5prime, _3prime, _) in sjs:
+                            if ((abs(left + float(width)/2 - _5prime) <= float(width)/2) and 
+                                (abs(right + float(width)/2 - _3prime) <= float(width)/2)):
+                                s_plus.add((left, right))
+                                break
+
+                if len(s_plus.intersection(s_minus)) == 0:
+                    phasing_reads[tuple([tuple(sorted(s_plus)),tuple(sorted(s_minus))])] += 1
+                else:
+                    reject_count += 1
+
         
         print(f"rejected {reject_count} reads")
         print(f"average read length: {mean_read_len.mean}")
@@ -471,7 +500,7 @@ class SpliceJunction():
         count_5prime_3prime_pair = Counter()
         phasing = []
         if paired:
-            for r1, r2 in read_pair_generator(bam, f"{self.contig}:1-29903"):
+            for r1, r2 in read_pair_generator(bam, f"{self.contig}:1-{self.refLength}"):
                 sjs1, ref_pos1 = self.get_spliced_junctions_muts(r1, mutList)
                 sjs2, _ = self.get_spliced_junctions_muts(r2, mutList)
                 strand = not r1.is_reverse
@@ -490,7 +519,7 @@ class SpliceJunction():
                     if len(sjs2) > 1:
                         phasing.append(sjs2)
         else:
-            for read in bam.fetch(self.contig, 0, 29903):
+            for read in bam.fetch(self.contig, 0, self.refLength):
                 if read.mapping_quality >= self.min_mapping_quality:
                     sjs, _ = self.get_spliced_junctions_muts(read, mutList)
                     #sjs, _ = self.get_spliced_junctions(read)
