@@ -422,12 +422,15 @@ class solveTranscription():
         total_abundance = sum(solCWeight.values())
         
         solPaths = [(self.graph.getPathIndex(path), path, solCWeight[pathIndex] / total_abundance)
-                    for pathIndex, path in enumerate(self.chosen_paths)]
+                    for pathIndex, path in enumerate(self.chosen_paths) if solCWeight[pathIndex] > 0]
 
         self.solution = sorted(solPaths, key = lambda x: x[0])
         
         self.supported_phasing_read_indices = {}
         for pathIndex, path in enumerate(self.chosen_paths):
+
+            if solCWeight[pathIndex] == 0:
+                continue
 
             path_id = self.graph.getPathIndex(path)
             path_spliceEdges = [edge for edge in path if edge.type == 'splice']
@@ -632,6 +635,10 @@ class solveTranscription():
                     
         solPaths = []
         for pathIndex in range(self.numPaths):
+
+            if solWeight[pathIndex] == 0:
+                continue
+
             path = []
             # get the path splice edges
             path_spliceEdges = []
