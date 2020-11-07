@@ -26,7 +26,7 @@
 
 <a name="io"></a>
 ### I/O formats
-The input for Jumper is a short-read paired-end bam file containing the sequencing data and a fasta file containing the reference genome.
+The input for Jumper is a bam file containing the sequencing data and a fasta file containing the reference genome.
 The output is similar to a fasta file format, where each transcript name is followed by the edges in the corresponding path in the segment graph (see `data/sample_transcripts.out` for an example).
 
 ### Arguments
