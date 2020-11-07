@@ -24,6 +24,7 @@ rule jumper:
         sj_reads="jumper/{sense}_{seed}/sample_{rep}_sj_reads.tsv",
         graph="jumper/{sense}_{seed}/sample_{rep}_graph.dot",
         transcripts="jumper/{sense}_{seed}/sample_{rep}_canonical_transcripts.out"
+    benchmark: "jumper/{sense}_{seed}/benchmark_{rep}.log"
     log:
         std="jumper/{sense}_{seed}/sample_{rep}.log",
         err="jumper/{sense}_{seed}/sample_{rep}.err.log"
