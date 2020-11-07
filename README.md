@@ -106,5 +106,21 @@ The output is similar to a fasta file format, where each transcript name is foll
       --maxIter MAXITER     maximum iterations for the greedy algorithm [100]
 
 ### Example
-Please refer to `simulation_pipeline` for example case of using Jumper on simulated bam files.
+One way to see how to use Jumper is through `simulation_pipeline` for example cases of using Jumper on simulated bam files.
 The Jumper usage is shown in the snakemake `simulation_pipeline/jumper.smk`.
+
+Here we will run Jumper to reconstruct the transcripts on simulated phasing reads.
+
+#### Simulate transcripts and phasing reads
+    
+    $ python simulate_segment_graph.py --seed 0 --sense neg --npaths 2 --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --outputPaths ../data/sample_transcripts.out --outputFasta ../data/sample_transcripts.fasta -f ../data/reference.fasta --outputReadCounts ../data/sample_readcounts.out --outputPhasing ../data/sample_phasing.out --nreads 1000
+
+This command generates 1000 phasing reads in `../data/sample_phasing`.
+The ground transcripts are written in `../data/sample_transcripts.out`.
+
+#### Reconstruct the transcripts
+
+    $ python jumper.py --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
+  
+The reconstructed transcripts are written to `../data/sample_decomposition.out`.
+
