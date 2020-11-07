@@ -1,0 +1,439 @@
+reading ../data/sample_phasing.out
+number of splice edges -- 29
+number of phasing reads -- 9
+total number of reads -- 1000
+number of ST paths -- 3440
+number of transcripts is 15
+number of transcript splice edges is 14
+--------------------------------------------------
+Using license file /Users/aero_user/gurobi.lic
+Academic license - for non-commercial use only
+--------------------------------------------------
+max phasing count is 380
+total reads is 1000
+--------------------------------------------------
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 1
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 494 rows, 104 columns and 1070 nonzeros
+Model fingerprint: 0xed22358f
+Variable types: 75 continuous, 29 integer (29 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 494 rows and 104 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 8 available processors)
+
+Solution count 1: -19155.5 
+No other solutions better than -19155.5
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -1.915552151608e+04, best bound -1.915552151608e+04, gap 0.0000%
+solution G:
+{0: 0.05153329097414975}
+solution C:
+{}
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 1
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 19 rows, 37 columns and 71 nonzeros
+Model fingerprint: 0xcd11e122
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 5 rows and 9 columns
+Presolve time: 0.00s
+Presolved: 14 rows, 28 columns, 49 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0   -1.3746951e+03   6.278534e+00   0.000000e+00      0s
+      14   -1.9155522e+04   0.000000e+00   0.000000e+00      0s
+
+Solved in 14 iterations and 0.00 seconds
+Optimal objective -1.915552152e+04
+solution G:
+{}
+solution C:
+{0: 0.05153329097414975}
+**************************************************
+iteration 1
+{0: 0.05153329097414975}
+[0]
+**************************************************
+**************************************************
+number of chosen paths = 1
+[0]
+[0]
+**************************************************
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 2
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 494 rows, 105 columns and 1078 nonzeros
+Model fingerprint: 0x6b19c97e
+Variable types: 76 continuous, 29 integer (29 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Found heuristic solution: objective -23704.70819
+Presolve removed 453 rows and 67 columns
+Presolve time: 0.00s
+Presolved: 41 rows, 38 columns, 127 nonzeros
+Variable types: 36 continuous, 2 integer (2 binary)
+
+Root relaxation: objective -3.223639e+03, 8 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 -3223.6393    0    2 -23704.708 -3223.6393  86.4%     -    0s
+     0     0 -3297.6501    0    2 -23704.708 -3297.6501  86.1%     -    0s
+H    0     0                    -3298.378355 -3297.6501  0.02%     -    0s
+
+Cutting planes:
+  Gomory: 1
+  Implied bound: 9
+  MIR: 3
+  RLT: 1
+
+Explored 1 nodes (19 simplex iterations) in 0.01 seconds
+Thread count was 1 (of 8 available processors)
+
+Solution count 2: -3298.38 -23704.7 
+No other solutions better than -3298.38
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -3.298378355049e+03, best bound -3.298378355049e+03, gap 0.0000%
+solution G:
+{0: 0.48204529115744066}
+solution C:
+{0: 0.01795470884255931}
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 2
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 19 rows, 38 columns and 80 nonzeros
+Model fingerprint: 0x875653e1
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 3 rows and 5 columns
+Presolve time: 0.00s
+Presolved: 16 rows, 33 columns, 64 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0   -3.2948508e+03   2.397984e-01   0.000000e+00      0s
+       2   -3.2983784e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.00 seconds
+Optimal objective -3.298378355e+03
+solution G:
+{}
+solution C:
+{0: 0.017954708842559314, 1: 0.4820452911574406}
+**************************************************
+iteration 2
+{0: 0.017954708842559314, 1: 0.4820452911574406}
+[0, 12]
+**************************************************
+**************************************************
+number of chosen paths = 2
+[1, 0]
+[12, 0]
+**************************************************
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 3
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 494 rows, 106 columns and 1087 nonzeros
+Model fingerprint: 0x70e19169
+Variable types: 77 continuous, 29 integer (29 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Found heuristic solution: objective -23986.85863
+Presolve removed 453 rows and 67 columns
+Presolve time: 0.00s
+Presolved: 41 rows, 39 columns, 135 nonzeros
+Variable types: 37 continuous, 2 integer (2 binary)
+
+Root relaxation: objective -2.843370e+03, 8 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 -2843.3701    0    1 -23986.859 -2843.3701  88.1%     -    0s
+H    0     0                    -3039.610010 -2843.3701  6.46%     -    0s
+     0     0     cutoff    0      -3039.6100 -3039.6100  0.00%     -    0s
+
+Cutting planes:
+  Gomory: 1
+  Implied bound: 5
+  MIR: 4
+  Flow cover: 2
+  RLT: 1
+  Relax-and-lift: 1
+
+Explored 1 nodes (18 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 8 available processors)
+
+Solution count 2: -3039.61 -23986.9 
+No other solutions better than -3039.61
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -3.039610009758e+03, best bound -3.039610009758e+03, gap 0.0000%
+solution G:
+{0: 0.125}
+solution C:
+{0: 0.35534237958303383, 1: 0.01965762041696621}
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 3
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 19 rows, 39 columns and 86 nonzeros
+Model fingerprint: 0x91c09fc5
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 1 rows and 1 columns
+Presolve time: 0.00s
+Presolved: 18 rows, 38 columns, 80 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0   -2.7287621e+03   2.252714e+00   0.000000e+00      0s
+       7   -3.0396100e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 7 iterations and 0.00 seconds
+Optimal objective -3.039610010e+03
+solution G:
+{}
+solution C:
+{0: 0.35534237958303383, 1: 0.01965762041696621, 2: 0.125}
+**************************************************
+iteration 3
+{0: 0.35534237958303383, 1: 0.01965762041696621, 2: 0.125}
+[12, 0, 8]
+**************************************************
+**************************************************
+number of chosen paths = 3
+[0, 1, 2]
+[12, 0, 8]
+**************************************************
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 4
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 494 rows, 107 columns and 1093 nonzeros
+Model fingerprint: 0x1b441c40
+Variable types: 78 continuous, 29 integer (29 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 453 rows and 67 columns
+Presolve time: 0.00s
+Presolved: 41 rows, 40 columns, 140 nonzeros
+Variable types: 38 continuous, 2 integer (2 binary)
+
+Root relaxation: objective -2.794252e+03, 13 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 -2794.2524    0    2          - -2794.2524      -     -    0s
+H    0     0                    -3039.610010 -2794.2524  8.07%     -    0s
+     0     0 -2860.7257    0    2 -3039.6100 -2860.7257  5.89%     -    0s
+     0     0 -2865.8075    0    2 -3039.6100 -2865.8075  5.72%     -    0s
+     0     0 -2871.3357    0    2 -3039.6100 -2871.3357  5.54%     -    0s
+     0     0 -2924.6155    0    2 -3039.6100 -2924.6155  3.78%     -    0s
+     0     0 -2995.4001    0    1 -3039.6100 -2995.4001  1.45%     -    0s
+     0     0 -3006.5347    0    2 -3039.6100 -3006.5347  1.09%     -    0s
+     0     0 -3009.0968    0    2 -3039.6100 -3009.0968  1.00%     -    0s
+     0     0 -3009.3729    0    2 -3039.6100 -3009.3729  0.99%     -    0s
+     0     0 -3009.6855    0    2 -3039.6100 -3009.6855  0.98%     -    0s
+     0     2 -3020.5087    0    2 -3039.6100 -3020.5087  0.63%     -    0s
+
+Cutting planes:
+  MIR: 4
+  Flow cover: 3
+  RLT: 2
+
+Explored 3 nodes (68 simplex iterations) in 0.02 seconds
+Thread count was 1 (of 8 available processors)
+
+Solution count 1: -3039.61 
+No other solutions better than -3039.61
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -3.039610009758e+03, best bound -3.039610009758e+03, gap 0.0000%
+solution G:
+{0: 0.01965762041696621}
+solution C:
+{0: 0.35534237958303383, 1: 0.0, 2: 0.125}
+++++++++++++++++++++++++++++++++++++++++++++++++++
+no paths were added
+++++++++++++++++++++++++++++++++++++++++++++++++++
+Changed value of parameter Threads to 1
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter Method to 1
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Changed value of parameter IntFeasTol to 1e-09
+   Prev: 1e-05  Min: 1e-09  Max: 0.1  Default: 1e-05
+Changed value of parameter FeasibilityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+Changed value of parameter OptimalityTol to 1e-09
+   Prev: 1e-06  Min: 1e-09  Max: 0.01  Default: 1e-06
+--------------------------------------------------
+greedy solver iteration 4
+number of splice edges is 29
+number of phasing reads is 9
+length of shorted possible transcript is 1541.0
+--------------------------------------------------
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (mac64)
+Optimize a model with 19 rows, 39 columns and 86 nonzeros
+Model fingerprint: 0x91c09fc5
+Coefficient statistics:
+  Matrix range     [1e-01, 3e+04]
+  Objective range  [3e+00, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 1 rows and 1 columns
+Presolve time: 0.00s
+Presolved: 18 rows, 38 columns, 80 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0   -2.7287621e+03   2.252714e+00   0.000000e+00      0s
+       7   -3.0396100e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 7 iterations and 0.00 seconds
+Optimal objective -3.039610010e+03
+solution G:
+{}
+solution C:
+{0: 0.35534237958303383, 1: 0.01965762041696621, 2: 0.125}
