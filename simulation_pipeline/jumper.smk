@@ -45,7 +45,7 @@ rule jumper:
         "--outputPhasing {output.phasing} "
         "--outputMatching {output.matching} "
         "--outputTranscripts {output.transcripts} "
-        "--greedy True "
+        "--greedy True --paired True "
         "--sj_threshold {params.sj_threshold} -k {params.npaths} --threads {params.nthreads} "
         "--timelimit {params.timelimit} "
         "--samplingFrequency {params.samplingFrequency} "
