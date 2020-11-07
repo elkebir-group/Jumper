@@ -6,6 +6,8 @@ The RNA-seq experiments are simulated using [polyester](https://github.com/alyss
 The resulting bam files then serve as input for the transcript assembly methods.
 The results of the assembly methods can be compared using the `evaluation.py` code provided in the `jumper` folder.
 
+Simulated bam files used to generate the figures in the paper 'JUMPER: Discontinuous Transcript Assembly in SARS-CoV-2' can be found at `https://databank.illinois.edu/datasets/IDB-6667667`.
+
 The simulation parameters can be set in `config.yaml`.
 Simulation parameters are
 PARAMETER           | DESCRIPTION
