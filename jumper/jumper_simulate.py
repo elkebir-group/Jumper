@@ -15,8 +15,8 @@ from collections import Counter
 import math
 import random
 
-import jumper
-from segment_graph_aux import *
+from .jumper import segmentGraph
+from .segment_graph_aux import *
 
 def getPathProb(path):
     prob = 1
@@ -120,7 +120,7 @@ class simulator():
                  nreads = None, npaths = None, readlength = None, insertlength = None):
         self.ref = ref
         self.verbose = verbose
-        self.graph = jumper.segmentGraph(breakpoints = breakpoints, edges = edges, verbose = self.verbose,
+        self.graph = segmentGraph(breakpoints = breakpoints, edges = edges, verbose = self.verbose,
                                               ref = self.ref)
         self.graph.initCanonicalTranscripts()
         self.sense = sense
@@ -378,8 +378,7 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
-if __name__ == "__main__":
-    
+def get_options():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--fasta", type=str, help="fasta file", required=True)    
     parser.add_argument("--inputBreakpoints", type=str, help="input file contiaining breakpoints")
@@ -405,5 +404,14 @@ if __name__ == "__main__":
 
     random.seed(args.seed)
     np.random.seed(args.seed)
+    return args
 
-    main(args)
+
+def main_cli():
+    arguments = get_options()
+    main(arguments)
+
+
+if __name__ == "__main__":
+    arguments = get_options()
+    main(arguments)

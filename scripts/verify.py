@@ -1,9 +1,10 @@
 import pandas as pd
 import pysam
-from bam_io import SpliceJunction as SJ
 import argparse
 import sys
 from typing import List, Dict, Tuple
+
+from jumper.bam_io import SpliceJunction as SJ
 
 """
 !!Alert: Always use [start, end) intervals, and 0-based coordinate internally
@@ -136,69 +137,9 @@ def get_read_segments_junctions(read):
 
 
 def main(transcript_file, bam_file, contig="chrSCV"):
-    # df_transcript = read_GTF(transcript_file)
-    # transcriptome = build_transcript(df_transcript)
-    # segments = Segments(transcriptome, 29903)
-
-    transcriptome = {}
-    with open(transcript_file) as ifile:
-        name = None
-        for line in ifile:
-            if line.startswith(">"):
-                if name is None:
-                    data_transcript = []
-                else:
-                    transcriptome[name] = pd.DataFrame(data_transcript)
-                    data_transcript = []
-                name = line[1:]
-            else:
-                former, latter, type_ = line.split()
-                former = former.strip('][').split(',')
-                latter = latter.strip('][').split(',')
-                data_transcript.append({
-                    "v_start": former[0],
-                    "v_end": former[1],
-                    "w_start": latter[0],
-                    "w_end": latter[1],
-                    "type": type_})
-
-    linked_splices = {}
-    for name, transcript in transcriptome.items():
-        if (transcript["type"] == "splice").sum() > 1:
-            splices = transcript.loc[transcript["type"] == "splice", ["v_end", "w_start"]].astype(int).to_numpy()
-            linked_splices[name] = splices
-            print(name, transcript[transcript["type"] == "splice"], splices)
-
-    tol = 10
-
-    bam = pysam.AlignmentFile(bam_file)
-    counts_transcript = {name: {"exact": 0, "partial": 0} for name in linked_splices.keys()}
-    cnt = 0
-    for read in bam.fetch(contig):
-        cnt += 1
-        if cnt % 1000 == 0:
-            print(f"{cnt}", end='\r')
-        if read.cigarstring.count("N") >= 2 and read.mapping_quality > 30:
-            _, jumps, _, _ = get_read_segments_junctions(read)
-            for transcript, splices in linked_splices.items():
-                for start, end, kind in jumps:
-                    if kind == "splice":
-                        for row in splices:
-                            if abs(start - row[0]) < tol and abs(end - row[1]) < tol:
-                                is_transcript_failed = False
-                                break
-                        else:
-                            is_transcript_failed = True
-                    if is_transcript_failed:
-                        # hits no splice
-                        break
-                else:
-                    # all jumps succeed
-                    if read.cigarstring.count("N") == splices.shape[0]:
-                        counts_transcript[transcript]["exact"] += 1
-                    else:
-                        counts_transcript[transcript]["partial"] += 1
-    print(counts_transcript)
+    df_transcript = read_GTF(transcript_file)
+    transcriptome = build_transcript(df_transcript)
+    segments = Segments(transcriptome, 29903)
 
 
 if __name__ == "__main__":

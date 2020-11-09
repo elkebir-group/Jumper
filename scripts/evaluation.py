@@ -16,8 +16,7 @@ from collections import Counter
 import math
 import itertools
 
-import segment_graph
-from segment_graph_aux import *
+from jumper.segment_graph_aux import *
 
 
 class solution():

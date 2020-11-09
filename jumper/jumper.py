@@ -12,10 +12,11 @@ import sys
 import argparse
 import statistics
 import math
+from typing import Dict, Tuple, List
 
-import bam_io
-from solveTranscription import solveTranscription
-from segment_graph_aux import *
+from .bam_io import SpliceJunction
+from .solveTranscription import solveTranscription
+from .segment_graph_aux import *
 
 class mynode():
             
@@ -604,9 +605,9 @@ def main(args):
     
     ref = pysam.FastaFile(args.fasta)    
 
-    SJcounter = bam_io.SpliceJunction(args.fasta, min_base_qual=args.min_base_qual, 
-                                      min_mapping_qual=args.min_mapping_qual,
-                                      contig = ref.references[0])
+    SJcounter = SpliceJunction(args.fasta, min_base_qual=args.min_base_qual,
+                               min_mapping_qual=args.min_mapping_qual,
+                               contig=ref.references[0])
     
     if args.inputBreakpoints and args.inputEdges:
 
