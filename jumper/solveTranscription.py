@@ -119,7 +119,8 @@ class solveTranscription():
         while iter_count <= self.max_iter or flag in [1,2,3]:
 
             model = gp.Model(f"solveGreedyTranscription_{kdx}")
-            model.setParam(gp.GRB.Param.Threads, self.threads)
+            if self.threads > 1:
+                model.setParam(gp.GRB.Param.Threads, self.threads)
             if self.timelimit:
                 model.setParam(gp.GRB.Param.TimeLimit, self.timelimit)
 
@@ -266,7 +267,8 @@ class solveTranscription():
             #     model.setObjectiveN(expr_obj_splice_count, 1, 0)
 
             model.setParam(gp.GRB.Param.OutputFlag, self.verbose)
-            model.setParam(gp.GRB.Param.Method, 1)
+            model.setParam(gp.GRB.Param.ConcurrentMIP, 1)
+            model.setParam(gp.GRB.Param.Method, 4)
 
             model.setParam(gp.GRB.Param.IntFeasTol, 1e-9)
             model.setParam(gp.GRB.Param.FeasibilityTol, 1e-9)
