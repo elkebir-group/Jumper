@@ -694,7 +694,7 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
-if __name__ == "__main__":
+def get_options():
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--bam", type=str, help="aligned bam file")
     parser.add_argument("--paired", type=str2bool, default=True, help="is the bam file paired-end [True]")
@@ -731,4 +731,16 @@ if __name__ == "__main__":
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
 
     args.vcf = None
-    main(args)
+    args.paired = True
+
+    return args
+
+def main_cli():
+    """Entry point for command-line script"""
+    arguments = get_options()
+    main(arguments)
+
+
+if __name__ == "__main__":
+    arguments = get_options()
+    main(arguments)
