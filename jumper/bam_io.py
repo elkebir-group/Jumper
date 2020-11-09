@@ -53,7 +53,7 @@ class IncrementalAverage():
 
 
 class SpliceJunction():
-    def __init__(self, reference: str, min_base_qual=20, min_mapping_qual=20, min_snv_qual = 20, contig = None):
+    def __init__(self, reference: str, min_base_qual=20, min_mapping_qual=20, min_snv_qual=20, contig=None):
         self.CIGAR = ["M", "I", "D", "N", "S", "H", "P", "=", "X", "B"]
         self.sgRNAs = {  # 0-based positions
             "S": 21562,
@@ -146,7 +146,7 @@ class SpliceJunction():
                 query_start += length
         return sj_ref, sj_query
 
-    def get_spliced_junctions_muts(self, read, mutList = []):
+    def get_spliced_junctions_muts(self, read, mutList=[]):
         sj_ref = []
         ref_start = read.reference_start
         query_start = 0
@@ -154,9 +154,10 @@ class SpliceJunction():
             if st == 3:
                 # All flanking 5 nucleotides have good base quality
                 if read.query_qualities:
-                    if (min(read.query_qualities[max(query_start-6, 0):query_start]) >= self.min_base_quality and 
+                    if (min(read.query_qualities[max(query_start-6, 0):query_start]) >= self.min_base_quality and
                             min(read.query_qualities[query_start:min(query_start+5, read.query_length)])) >= self.min_base_quality:
-                        sj_ref.append((ref_start-1, ref_start+length, 'splice'))
+                        sj_ref.append(
+                            (ref_start-1, ref_start+length, 'splice'))
                 else:
                     sj_ref.append((ref_start-1, ref_start + length, 'splice'))
                 ref_start += length
@@ -164,7 +165,8 @@ class SpliceJunction():
                 for pos in mutList:
                     if pos < ref_start + length and ref_start <= pos:
                         shift = pos - ref_start
-                        sj_ref.append((pos, pos, read.query_sequence[query_start + shift - 1: query_start + shift]))
+                        sj_ref.append(
+                            (pos, pos, read.query_sequence[query_start + shift - 1: query_start + shift]))
                 ref_start += length
                 query_start += length
             elif st == 2:
@@ -182,9 +184,10 @@ class SpliceJunction():
             if st == 3:
                 # All flanking 5 nucleotides have good base quality
                 if read.query_qualities:
-                    if (min(read.query_qualities[max(query_start-6, 0):query_start]) >= self.min_base_quality and 
+                    if (min(read.query_qualities[max(query_start-6, 0):query_start]) >= self.min_base_quality and
                             min(read.query_qualities[query_start:min(query_start+5, read.query_length)])) >= self.min_base_quality:
-                        sj_ref.append((ref_start-1, ref_start+length, 'splice'))
+                        sj_ref.append(
+                            (ref_start-1, ref_start+length, 'splice'))
                 else:
                     sj_ref.append((ref_start-1, ref_start + length, 'splice'))
                 ref_start += length
@@ -228,23 +231,22 @@ class SpliceJunction():
         assert(len(read_segments) == len(sj_ref) + 1)
         final_read_segments = []
         final_sj_junctions = []
-        
+
         for idx, jump in enumerate(sj_ref):
             left_segment = read_segments[idx]
             right_segment = read_segments[idx + 1]
-            
+
             left_condition = (left_segment[1] - left_segment[0] >= 6)
             right_condition = (right_segment[1] - right_segment[0] >= 6)
-            
+
             if left_condition:
                 final_read_segments.append(left_segment)
             if right_condition:
                 final_read_segments.append(right_segment)
             if left_condition and right_condition and jump[-1] == 'splice':
                 final_sj_junctions.append(jump)
-        
+
         return final_read_segments, final_sj_junctions, ref_start, read.query_length
-        
 
     def assign_read_sgRNA(self, read) -> Tuple[str, Tuple[int, int]]:
         """Assign a read to a category of sgRNA.
@@ -319,7 +321,8 @@ class SpliceJunction():
         bin_sgRNA = []
         if paired:
             for r1, r2 in read_pair_generator(bam, f"{self.contig}:{pos-600}-{pos+600}", pos-1):
-                allele = r1.query_sequence[self.convert_ref_index_to_query(pos-1, r1)]
+                allele = r1.query_sequence[self.convert_ref_index_to_query(
+                    pos-1, r1)]
                 if 'N' in r1.cigarstring:
                     assignment, sj = self.assign_read_sgRNA(r1)
                 elif 'N' in r2.cigarstring:
@@ -345,26 +348,27 @@ class SpliceJunction():
                             allele = pileupRead.alignment.query_sequence[pileupRead.query_position]
                         else:
                             allele = '_'
-                        assignment, sj = self.assign_read_sgRNA(pileupRead.alignment)
+                        assignment, sj = self.assign_read_sgRNA(
+                            pileupRead.alignment)
                         if assignment is not None:
                             bin_sgRNA.append((assignment, allele))
                         else:
                             bin_sgRNA.append(("not_splice_junction", allele))
         return Counter(bin_sgRNA)
 
-    def get_allele_counts(self, bam_file, pos, max_depth = 2147483647) -> Dict[str, int]:
+    def get_allele_counts(self, bam_file, pos, max_depth=2147483647) -> Dict[str, int]:
 
         bam = pysam.AlignmentFile(bam_file, 'rb')
         allele_counts = {}
 
         for pileupColumn in bam.pileup(self.contig, pos-1, pos,
-                                        stepper="samtools",
-                                        min_base_quality=self.min_base_quality,
-                                        min_mapping_quality=self.min_mapping_quality,
-                                        max_depth=max_depth,
-                                        ignore_overlaps=True,
-                                        ignore_orhphans=True,
-                                        truncate=True):
+                                       stepper="samtools",
+                                       min_base_quality=self.min_base_quality,
+                                       min_mapping_quality=self.min_mapping_quality,
+                                       max_depth=max_depth,
+                                       ignore_overlaps=True,
+                                       ignore_orhphans=True,
+                                       truncate=True):
             for pileupRead in pileupColumn.pileups:
                 if not pileupRead.is_del and not pileupRead.alignment.is_duplicate:
                     if type(pileupRead.query_position) is int:
@@ -376,7 +380,7 @@ class SpliceJunction():
 
         return allele_counts
 
-    def get_sj_reads(self, bam_file, mutList = [], paired = False) -> pd.DataFrame:
+    def get_sj_reads(self, bam_file, mutList=[], paired=False) -> pd.DataFrame:
         bam = pysam.AlignmentFile(bam_file, "rb")
         count_5prime_3prime_pair = Counter()
 
@@ -388,11 +392,11 @@ class SpliceJunction():
                 _, sjs2, _, _ = self.get_read_segments_junctions(r2)
                 strand = not r1.is_reverse
                 if len(sjs1) > 0:
-                        count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs1
-                                                         if entryType == 'splice'])
+                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs1
+                                                     if entryType == 'splice'])
                 if len(sjs2) > 0:
-                        count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs2
-                                                         if entryType == 'splice'])
+                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs2
+                                                     if entryType == 'splice'])
         else:
             for read in bam.fetch(self.contig, 0, 29903):
                 if read.mapping_quality >= self.min_mapping_quality:
@@ -400,19 +404,20 @@ class SpliceJunction():
                     #sjs, _ = self.get_spliced_junctions(read)
                     strand = not read.is_reverse
                     if len(sjs) > 0:
-                        count_5prime_3prime_pair.update([(p5, p3, strand) 
+                        count_5prime_3prime_pair.update([(p5, p3, strand)
                                                          for p5, p3, entryType in sjs
                                                          if entryType == 'splice'])
 
         data = []
         for (p5, p3, strand), count in count_5prime_3prime_pair.items():
             data.append([p5, p3, strand, count])
-        df = pd.DataFrame(data, columns=["5prime", "3prime", "strand", "count"])
+        df = pd.DataFrame(
+            data, columns=["5prime", "3prime", "strand", "count"])
         df["sgRNA_ref"] = df["3prime"].apply(lambda x: self.identify_ORF(
             self.reference.fetch(self.contig, x, 29903).find("ATG") + x))
         return df
 
-    def get_phasing_reads(self, bam_file, splice_edges, width = 0, paired=False):
+    def get_phasing_reads(self, bam_file, splice_edges, width=0, paired=False):
         bam = pysam.AlignmentFile(bam_file, 'rb')
         phasing_reads = Counter()
         #phasing_reads = {}
@@ -427,7 +432,7 @@ class SpliceJunction():
                 for read in reads:
                     read_seg, sjs, curr_ref_pos = self.get_read_segments(read)
                     #read_seg, sjs, curr_ref_pos, read_len = self.get_read_segments_junctions(read)
-                    #mean_read_len.update(read_len)
+                    # mean_read_len.update(read_len)
 
                     if ref_pos and (read.reference_start > ref_pos):
                         break
@@ -441,25 +446,16 @@ class SpliceJunction():
                                 break
 
                         for (_5prime, _3prime, _) in sjs:
-                            if ((abs(left + float(width)/2 - _5prime) <= float(width)/2) and 
-                                (abs(right + float(width)/2 - _3prime) <= float(width)/2)):
+                            if ((abs(left + float(width)/2 - _5prime) <= float(width)/2) and
+                                    (abs(right + float(width)/2 - _3prime) <= float(width)/2)):
                                 s_plus.add((left, right))
                                 break
 
                 if len(s_plus.intersection(s_minus)) == 0:
-                    phasing_reads[tuple([tuple(sorted(s_plus)),tuple(sorted(s_minus))])] += 1
+                    phasing_reads[tuple(
+                        [tuple(sorted(s_plus)), tuple(sorted(s_minus))])] += 1
                 else:
                     reject_count += 1
-                #count_phasing_reads.update(tuple([tuple(s_plus),tuple(s_minus)]))
-                # if len(s_plus.intersection(s_minus)) == 0:
-                #     key = tuple([tuple(sorted(s_plus)),tuple(sorted(s_minus))])
-                #     if key in phasing_reads.keys():
-                #         phasing_reads[key] += 1
-                #     else:
-                #         phasing_reads[key] = 1
-                # else:
-                #     reject_count += 1
-                    #print(f"rejected : {s_plus} -- {s_minus}")
         else:
             for read in bam.fetch(self.contig, 0, self.refLength):
                 if read.mapping_quality < self.min_mapping_quality:
@@ -478,24 +474,23 @@ class SpliceJunction():
                                 break
 
                         for (_5prime, _3prime, _) in sjs:
-                            if ((abs(left + float(width)/2 - _5prime) <= float(width)/2) and 
-                                (abs(right + float(width)/2 - _3prime) <= float(width)/2)):
+                            if ((abs(left + float(width)/2 - _5prime) <= float(width)/2) and
+                                    (abs(right + float(width)/2 - _3prime) <= float(width)/2)):
                                 s_plus.add((left, right))
                                 break
 
                 if len(s_plus.intersection(s_minus)) == 0:
-                    phasing_reads[tuple([tuple(sorted(s_plus)),tuple(sorted(s_minus))])] += 1
+                    phasing_reads[tuple(
+                        [tuple(sorted(s_plus)), tuple(sorted(s_minus))])] += 1
                 else:
                     reject_count += 1
 
-        
         print(f"rejected {reject_count} reads")
         print(f"average read length: {mean_read_len.mean}")
-        #return dict(count_phasing_reads)
+        # return dict(count_phasing_reads)
         return dict(phasing_reads)
 
-
-    def get_sj_reads_phasing(self, bam_file, mutList = [], paired = False) -> Tuple[pd.DataFrame, List[List[Tuple[int, int, str]]]]:
+    def get_sj_reads_phasing(self, bam_file, mutList=[], paired=False) -> Tuple[pd.DataFrame, List[List[Tuple[int, int, str]]]]:
         bam = pysam.AlignmentFile(bam_file, "rb")
         count_5prime_3prime_pair = Counter()
         phasing = []
@@ -505,14 +500,15 @@ class SpliceJunction():
                 sjs2, _ = self.get_spliced_junctions_muts(r2, mutList)
                 strand = not r1.is_reverse
                 if len(sjs1) > 0:
-                        count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs1
-                                                         if entryType == 'splice'])
+                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs1
+                                                     if entryType == 'splice'])
                 if len(sjs2) > 0:
-                        count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs2
-                                                         if entryType == 'splice'])
+                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs2
+                                                     if entryType == 'splice'])
                 ref_pos2 = r2.reference_start
-                if ref_pos2 > ref_pos1:                    
-                    phasing.append(sjs1 + [(ref_pos1, ref_pos2, 'pair')] + sjs2)                
+                if ref_pos2 > ref_pos1:
+                    phasing.append(
+                        sjs1 + [(ref_pos1, ref_pos2, 'pair')] + sjs2)
                 else:
                     if len(sjs1) > 1:
                         phasing.append(sjs1)
@@ -525,7 +521,7 @@ class SpliceJunction():
                     #sjs, _ = self.get_spliced_junctions(read)
                     strand = not read.is_reverse
                     if len(sjs) > 0:
-                        count_5prime_3prime_pair.update([(p5, p3, strand) 
+                        count_5prime_3prime_pair.update([(p5, p3, strand)
                                                          for p5, p3, entryType in sjs
                                                          if entryType == 'splice'])
                         #count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3 in sjs])
@@ -534,7 +530,8 @@ class SpliceJunction():
         data = []
         for (p5, p3, strand), count in count_5prime_3prime_pair.items():
             data.append([p5, p3, strand, count])
-        df = pd.DataFrame(data, columns=["5prime", "3prime", "strand", "count"])
+        df = pd.DataFrame(
+            data, columns=["5prime", "3prime", "strand", "count"])
         df["sgRNA_ref"] = df["3prime"].apply(lambda x: self.identify_ORF(
             self.reference.fetch(self.contig, x, 29903).find("ATG") + x))
         return df, phasing
@@ -546,7 +543,7 @@ class SpliceJunction():
     def save_all_sj_reads_phasing(self, bam_file, output_fname, output_phase):
         df, phasing = self.get_sj_reads_phasing(bam_file)
         df.to_csv(output_fname, sep='\t', index=False)
-        
+
         with open(output_phase, 'w') as output:
             for idx, phase in enumerate(phasing):
                 output.write(f">Phase_{idx}\n")
@@ -587,9 +584,10 @@ def main(args):
         bin_sgRNA = SJcounter.count_sj_pos(args.pos, args.bam, args.pair_end)
     print(bin_sgRNA)
 
+
 def str2bool(v):
     if isinstance(v, bool):
-       return v
+        return v
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
     elif v.lower() in ('no', 'false', 'f', 'n', '0'):
@@ -597,20 +595,24 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--bam", type=str, help="aligned bam file")
     parser.add_argument("-v", "--vcf", type=str, help="input vcf file")
-    parser.add_argument("-f", "--fasta", type=str, help="fasta file", required=True)
+    parser.add_argument("-f", "--fasta", type=str,
+                        help="fasta file", required=True)
     parser.add_argument("--min-base-qual", type=int,
                         help="minimum base quality [20]", default=20)
     parser.add_argument("--min-mapping-qual", type=int,
                         help="minimum mapping quality [20]", default=20)
-    parser.add_argument("--min-snv-qual", type=int, help="minimum snv quality [20]", default = 20)
+    parser.add_argument("--min-snv-qual", type=int,
+                        help="minimum snv quality [20]", default=20)
     parser.add_argument("-p", "--pos", type=int,
                         help="position of the mutation, 1-based")
     parser.add_argument("-o", "--outputCSV", type=str, help="output csv file")
-    parser.add_argument("--outputPhase", type=str, help="output file for phasing reads")
+    parser.add_argument("--outputPhase", type=str,
+                        help="output file for phasing reads")
     parser.add_argument("--paired", type=str2bool, nargs='?',
                         const=True, default=False, help="set to enable pair-end mode")
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
@@ -619,16 +621,17 @@ if __name__ == "__main__":
         print("outputCSV is required with a vcf file input!")
         exit(1)
     elif not args.outputCSV is None and args.vcf is None:
-        SJcounter = SpliceJunction(args.fasta, min_base_qual=args.min_base_qual, 
-                                   min_mapping_qual=args.min_mapping_qual, min_snv_qual = args.min_snv_qual)
+        SJcounter = SpliceJunction(args.fasta, min_base_qual=args.min_base_qual,
+                                   min_mapping_qual=args.min_mapping_qual, min_snv_qual=args.min_snv_qual)
         if args.outputPhase:
-            SJcounter.save_all_sj_reads_phasing(args.bam, args.outputCSV, args.outputPhase)
+            SJcounter.save_all_sj_reads_phasing(
+                args.bam, args.outputCSV, args.outputPhase)
         else:
             SJcounter.save_all_sj_reads(args.bam, args.outputCSV)
     elif args.outputCSV is None:
         main(args)
     else:
-        SJcounter = SpliceJunction(args.fasta, min_base_qual=args.min_base_qual, 
-                                   min_mapping_qual=args.min_mapping_qual, min_snv_qual = args.min_snv_qual)
+        SJcounter = SpliceJunction(args.fasta, min_base_qual=args.min_base_qual,
+                                   min_mapping_qual=args.min_mapping_qual, min_snv_qual=args.min_snv_qual)
         SJcounter.save_sj_mut_spanning_count(
             args.bam, args.vcf, args.outputCSV)

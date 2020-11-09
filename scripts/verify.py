@@ -39,6 +39,7 @@ class Transcript:
     def assign_read(self, read):
         pass
 
+
 class Segments:
     def __init__(self, transcriptome: Dict[str, Transcript], length):
         set_breakpoints = set()
@@ -47,12 +48,13 @@ class Segments:
                 set_breakpoints.update([exon.start, exon.end])
         self.breakpoints = sorted(list(set_breakpoints))
         self.n_segments = 1 + len(self.breakpoints)
-        
+
         if self.breakpoints[0] > 0:
             self.segments = [(0, self.breakpoints[0])]
         else:
             self.segments = []
-        self.segments += [(v, w) for v, w in zip(self.breakpoints[:-1], self.breakpoints[1:])]
+        self.segments += [(v, w)
+                          for v, w in zip(self.breakpoints[:-1], self.breakpoints[1:])]
         if self.breakpoints[-1] < length:
             self.segments.append((self.breakpoints[-1], length))
         print('\n'.join(list(f"{x}: {x[1] - x[0]}" for x in self.segments)))
@@ -79,61 +81,63 @@ def read_GTF(transcript_file) -> pd.DataFrame:
 def build_transcript(df_transcript: pd.DataFrame) -> Dict[str, Transcript]:
     dict_transcript = {}
     for _, row in df_transcript.loc[df_transcript["feature"] == "transcript"].iterrows():
-        dict_transcript[row["transcript_id"]] = Transcript(row["transcript_id"], row["start"], row["end"])
+        dict_transcript[row["transcript_id"]] = Transcript(
+            row["transcript_id"], row["start"], row["end"])
     for _, row in df_transcript.loc[df_transcript["feature"] == "exon"].iterrows():
-        dict_transcript[row["transcript_id"]].add_exon(row["exon"], row["start"], row["end"])
+        dict_transcript[row["transcript_id"]].add_exon(
+            row["exon"], row["start"], row["end"])
     return dict_transcript
 
 
 def read_bam(bam_file, contig_name, ref_file):
-    SJcounter = bam_io.SpliceJunction(ref_file, contig = contig_name)
+    SJcounter = bam_io.SpliceJunction(ref_file, contig=contig_name)
     df_sj_reads = SJcounter.get_sj_reads(bam_file, paired=False)
 
 
 def get_read_segments_junctions(read):
-        sj_ref = []
-        ref_start = read.reference_start
-        query_start = 0
-        for st, length in read.cigartuples:
-            if st == 3:
-                # skipped region from reference
-                sj_ref.append((ref_start-1, ref_start + length, 'splice'))
-                ref_start += length
-            elif st == 0 or st == 7 or st == 8:
-                # alignment match, sequence match or sequence mismatch
-                sj_ref.append((ref_start, ref_start + length - 1, "segment"))
-                ref_start += length
-                query_start += length
-            elif st == 2:
-                # deletion in the read
-                sj_ref.append((ref_start - 1, ref_start + length, 'deletion'))
-                ref_start += length
-            elif st == 1:
-                # insertion
-                sj_ref.append((ref_start - 1, ref_start - 1, 'insertion'))
-                query_start += length
-            elif st == 4:
-                # soft-clipping
-                query_start += length
-        final_read_segments = []
-        final_sj_junctions = []
-        
-        for idx, jump in enumerate(sj_ref):
-            if jump[-1] == "splice":
-                left_segment = sj_ref[idx-1]
-                right_segment = sj_ref[idx + 1]
-                
-                left_condition = (left_segment[1] - left_segment[0] >= 6)
-                right_condition = (right_segment[1] - right_segment[0] >= 6)
-            
-                if left_condition:
-                    final_read_segments.append(left_segment)
-                if right_condition:
-                    final_read_segments.append(right_segment)
-                if left_condition and right_condition and jump[-1] == 'splice':
-                    final_sj_junctions.append(jump)
-        
-        return final_read_segments, final_sj_junctions, ref_start, read.query_length
+    sj_ref = []
+    ref_start = read.reference_start
+    query_start = 0
+    for st, length in read.cigartuples:
+        if st == 3:
+            # skipped region from reference
+            sj_ref.append((ref_start-1, ref_start + length, 'splice'))
+            ref_start += length
+        elif st == 0 or st == 7 or st == 8:
+            # alignment match, sequence match or sequence mismatch
+            sj_ref.append((ref_start, ref_start + length - 1, "segment"))
+            ref_start += length
+            query_start += length
+        elif st == 2:
+            # deletion in the read
+            sj_ref.append((ref_start - 1, ref_start + length, 'deletion'))
+            ref_start += length
+        elif st == 1:
+            # insertion
+            sj_ref.append((ref_start - 1, ref_start - 1, 'insertion'))
+            query_start += length
+        elif st == 4:
+            # soft-clipping
+            query_start += length
+    final_read_segments = []
+    final_sj_junctions = []
+
+    for idx, jump in enumerate(sj_ref):
+        if jump[-1] == "splice":
+            left_segment = sj_ref[idx-1]
+            right_segment = sj_ref[idx + 1]
+
+            left_condition = (left_segment[1] - left_segment[0] >= 6)
+            right_condition = (right_segment[1] - right_segment[0] >= 6)
+
+            if left_condition:
+                final_read_segments.append(left_segment)
+            if right_condition:
+                final_read_segments.append(right_segment)
+            if left_condition and right_condition and jump[-1] == 'splice':
+                final_sj_junctions.append(jump)
+
+    return final_read_segments, final_sj_junctions, ref_start, read.query_length
 
 
 def main(transcript_file, bam_file, contig="chrSCV"):
@@ -148,7 +152,8 @@ if __name__ == "__main__":
     parser.add_argument("-g", "--transcript", type=str,
                         help="input GTF containing transcripts")
     parser.add_argument("-b", "--bam", type=str, help="BAM file of long reads")
-    parser.add_argument("-r", "--ref", type=str, help="FASTA file of reference genome, assume only containing SARS-CoV-2")
+    parser.add_argument("-r", "--ref", type=str,
+                        help="FASTA file of reference genome, assume only containing SARS-CoV-2")
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
 
     main(args.transcript, args.bam)

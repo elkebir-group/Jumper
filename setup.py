@@ -16,10 +16,6 @@ setuptools.setup(
     author='Palash Sashittal and Chuanyi Zhang',
     author_email='sashitt2@illinois.edu',
     python_requires='>=3.6',
-    # entry_points={'console_scripts': [
-    #     'jumper = jumper.jumper:main_cli',
-    #     'jumper_simulate = jumper.jumper_simulate:main_cli',
-    # ]},
     scripts=[
         'scripts/jumper',
         'scripts/jumper_simulate',
