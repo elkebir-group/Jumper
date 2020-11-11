@@ -25,6 +25,7 @@ rule STAR_index:
 
 rule STAR_align:
     input:
+        index=config["ref_dir"] + "/SAindex",
         fasta1="reads/{sense}_{seed}/sample_{rep}_1.fasta",
         fasta2="reads/{sense}_{seed}/sample_{rep}_2.fasta",
     threads: 8

@@ -21,7 +21,7 @@ rule simulate_transcript:
         transcriptReadCounts="transcripts/{sense}_{seed}_readcounts.out",
         phasingFile="transcripts/{sense}_{seed}_phasing.out",
     shell:
-        "python simulate_segment_graph.py --npaths {params.npaths} --seed {wildcards.seed} --sense {wildcards.sense} "
+        "jumper_simulate --npaths {params.npaths} --seed {wildcards.seed} --sense {wildcards.sense} "
         "--inputBreakpoints {input.breakpointFile} --nreads {params.nreads} "
         "--inputEdges {input.edgeFile} "
         "--fasta {params.refFile} "

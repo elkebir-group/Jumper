@@ -8,7 +8,10 @@
 ## Contents
 
   1. [Pre-requisites](#pre-requisites)
-  2. [Usage instcructions](#usage)
+  2. [Installation](#installation)
+     * [Using conda](#conda-install) (recommended)
+     * [Using pip](#pip-install) (alternative)
+  3. [Usage instcructions](#usage)
      * [I/O formats](#io)
      * [Jumper](#jumper)
      * [simulation](#simulation)
@@ -20,6 +23,54 @@
 + [pysam](https://pysam.readthedocs.io/en/latest/)
 + [pandas](https://pandas.pydata.org/pandas-docs/stable/index.html)
 + [gurobipy](https://www.gurobi.com/documentation/9.0/quickstart_mac/py_python_interface.html)
++ (optional for simulation pipeline) [snakemake (>=5.2.0)](https://snakemake.readthedocs.io)
+
+<a name="installation"></a>
+## Installation
+
+<a name="conda-install"></a>
+### Using conda (recommended)
+
+1. Download the released package of the latest version: `jumper-0.1.0.tar.bz2`.
+2. Create a new conda environment named "jumper" and install dependencies:
+   * If you don't need to run the simulation pipeline, please run
+
+   ```bash
+   conda create -n jumper -c conda-forge -c bioconda -c gurobi pandas pysam gurobi
+   ```
+
+   * Otherwise please run
+
+   ```bash
+   conda create -n jumper -c conda-forge -c bioconda -c gurobi pandas pysam snakemake STAR scallop stringtie gurobi
+   ```
+
+   Then activate the created environment: `conda activate jumper`.
+3. Install the package into current environment "jumper":
+
+    ```bash
+    conda install jumper-0.1.0.tar.bz2
+    ```
+
+**Note:** Make sure you have a gurobi license before running jumper. If you are an academic user, you can get a free license: <https://www.gurobi.com/academia/academic-program-and-licenses/>
+
+<a name="pip-install"></a>
+### Using pip (alternative)
+
+For users not having conda, and already have gurobi installed:
+
+1. Clone the git repository
+
+    ```bash
+    git clone git@github.com:elkebir-group/Jumper.git
+    ```
+
+2. Install jumper using pip
+
+    ```bash
+    cd Jumper
+    pip install ./
+    ```
 
 <a name="usage"></a>
 ## Usage instructions
@@ -30,24 +81,24 @@ The input for Jumper is a bam file containing the sequencing data and a fasta fi
 The output is similar to a fasta file format, where each transcript name is followed by the edges in the corresponding path in the segment graph (see `data/sample_transcripts.out` for an example).
 
 ### Arguments
-    usage: jumper.py [-h] [-b BAM] [--paired PAIRED] -f FASTA [-k NUMPATHS]
-                     [--min-base-qual MIN_BASE_QUAL]
-                     [--min-mapping-qual MIN_MAPPING_QUAL] [-w WIDTH]
-                     [--samplingFrequency SAMPLINGFREQUENCY]
-                     [--sj_threshold SJ_THRESHOLD]
-                     [--phasing_threshold PHASING_THRESHOLD] [--greedy GREEDY]
-                     [--outputCSV OUTPUTCSV] [--outputPhasing OUTPUTPHASING]
-                     [--inputCSV INPUTCSV] [--inputPhasing INPUTPHASING]
-                     [--inputBreakpoints INPUTBREAKPOINTS]
-                     [--inputEdges INPUTEDGES] [--outputGraph OUTPUTGRAPH]
-                     [--outputDOT OUTPUTDOT]
-                     [--outputTranscripts OUTPUTTRANSCRIPTS]
-                     [--outputBreakpoints OUTPUTBREAKPOINTS]
-                     [--outputEdges OUTPUTEDGES]
-                     [--outputDecomposition OUTPUTDECOMPOSITION]
-                     [--outputMatching OUTPUTMATCHING] [--outputGTF OUTPUTGTF]
-                     [--report REPORT] [--noverbose] [--threads THREADS]
-                     [--timelimit TIMELIMIT] [--maxIter MAXITER]
+    usage: jumper [-h] [-b BAM] [--paired PAIRED] -f FASTA [-k NUMPATHS]
+                  [--min-base-qual MIN_BASE_QUAL]
+                  [--min-mapping-qual MIN_MAPPING_QUAL] [-w WIDTH]
+                  [--samplingFrequency SAMPLINGFREQUENCY]
+                  [--sj_threshold SJ_THRESHOLD]
+                  [--phasing_threshold PHASING_THRESHOLD] [--greedy GREEDY]
+                  [--outputCSV OUTPUTCSV] [--outputPhasing OUTPUTPHASING]
+                  [--inputCSV INPUTCSV] [--inputPhasing INPUTPHASING]
+                  [--inputBreakpoints INPUTBREAKPOINTS]
+                  [--inputEdges INPUTEDGES] [--outputGraph OUTPUTGRAPH]
+                  [--outputDOT OUTPUTDOT]
+                  [--outputTranscripts OUTPUTTRANSCRIPTS]
+                  [--outputBreakpoints OUTPUTBREAKPOINTS]
+                  [--outputEdges OUTPUTEDGES]
+                  [--outputDecomposition OUTPUTDECOMPOSITION]
+                  [--outputMatching OUTPUTMATCHING] [--outputGTF OUTPUTGTF]
+                  [--report REPORT] [--noverbose] [--threads THREADS]
+                  [--timelimit TIMELIMIT] [--maxIter MAXITER]
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -114,14 +165,14 @@ Here we will run Jumper to reconstruct the transcripts on simulated phasing read
 
 #### Simulate transcripts and phasing reads
     
-    $ python simulate_segment_graph.py --seed 0 --sense neg --npaths 2 --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --outputPaths ../data/sample_transcripts.out --outputFasta ../data/sample_transcripts.fasta -f ../data/reference.fasta --outputReadCounts ../data/sample_readcounts.out --outputPhasing ../data/sample_phasing.out --nreads 1000
+    $ jumper_simulate --seed 0 --sense neg --npaths 2 --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --outputPaths ../data/sample_transcripts.out --outputFasta ../data/sample_transcripts.fasta -f ../data/reference.fasta --outputReadCounts ../data/sample_readcounts.out --outputPhasing ../data/sample_phasing.out --nreads 1000
 
 This command generates 1000 phasing reads in `../data/sample_phasing`.
 The ground transcripts are written in `../data/sample_transcripts.out`.
 
 #### Reconstruct the transcripts
 
-    $ python jumper.py --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
+    $ jumper --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
   
 The reconstructed transcripts are written to `../data/sample_decomposition.out`.
 

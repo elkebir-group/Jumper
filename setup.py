@@ -23,7 +23,6 @@ setuptools.setup(
     install_requires=[
         "pysam",
         "pandas",
-        "gurobi",
     ],
 )
 

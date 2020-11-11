@@ -36,7 +36,7 @@ rule jumper:
         nthreads=config["nthreads"],
         sj_threshold=config["sj_threshold"]
     shell:
-        "python jumper.py --fasta {params.refFile} --bam {input.bam} "
+        "jumper --fasta {params.refFile} --bam {input.bam} "
         "--outputBreakpoints {output.breakpoints} "
         "--outputEdges {output.edges} "
         "--outputCSV {output.sj_reads} "
