@@ -31,22 +31,22 @@
 <a name="conda-install"></a>
 ### Using conda (recommended)
 
-1. Download the released package of the latest version: `jumper-0.1.0.tar.bz2`.
+1. Download the [released package](https://github.com/elkebir-group/Jumper/releases) of the latest version: `jumper-0.1.0.tar.bz2`.
 2. Create a new conda environment named "jumper" and install dependencies:
-   * If you don't need to run the simulation pipeline, please run
-
-   ```bash
-   conda create -n jumper -c conda-forge -c bioconda -c gurobi pandas pysam gurobi
-   ```
-
-   * Otherwise please run
+   * If you want to run the simulation pipeline, please run
 
    ```bash
    conda create -n jumper -c conda-forge -c bioconda -c gurobi pandas pysam snakemake STAR scallop stringtie gurobi
    ```
 
-   Then activate the created environment: `conda activate jumper`.
-3. Install the package into current environment "jumper":
+   * Otherwise please run
+
+   ```bash
+   conda create -n jumper -c conda-forge -c bioconda -c gurobi pandas pysam gurobi
+   ```
+
+3. Then activate the created environment: `conda activate jumper`.
+4. Install the package into current environment "jumper":
 
     ```bash
     conda install jumper-0.1.0.tar.bz2
@@ -162,6 +162,7 @@ One way to see how to use Jumper is through `simulation_pipeline` for example ca
 The Jumper usage is shown in the snakemake `simulation_pipeline/jumper.smk`.
 
 Here we will run Jumper to reconstruct the transcripts on simulated phasing reads.
+You'll need to download this repository to get the resources files in the `data/` folder.
 
 #### Simulate transcripts and phasing reads
     
