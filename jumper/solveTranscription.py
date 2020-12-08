@@ -107,7 +107,7 @@ class solveTranscription():
             if i == 0:
                 xh[i] = 0
             else:
-                xh[i] = 2**(i - 1) * delta_x
+                xh[i] = 2**(i) * delta_x
             if i == 0:
                 F[i] = math.log(delta_x / 100)
             else:
@@ -488,7 +488,7 @@ class solveTranscription():
             if i == 0:
                 xh[i] = 0
             else:
-                xh[i] = 2**(i - 1) * delta_x
+                xh[i] = 2**(i) * delta_x
             if i == 0:
                 F[i] = math.log(delta_x / 100)
             else:
