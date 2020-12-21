@@ -10,13 +10,19 @@ import pysam
 import pandas as pd
 import numpy as np
 import sys
+import os
 import argparse
 from collections import Counter
 import math
 import random
 
-from .jumper import segmentGraph
-from .segment_graph_aux import *
+src = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+if not os.path.isdir(src):
+    raise ValueError("jumper directory cannot be found i.e. {}, is anything been moved?".format(src))
+sys.path.append(src)
+
+from jumper_main import segmentGraph
+from segment_graph_aux import *
 
 
 def getPathProb(path):

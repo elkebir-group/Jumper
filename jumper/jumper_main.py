@@ -9,14 +9,20 @@ Created on Sun Aug  2 00:58:51 2020
 import pysam
 import pandas as pd
 import sys
+import os
 import argparse
 import statistics
 import math
 from typing import Dict, Tuple, List
 
-from .bam_io import SpliceJunction
-from .solveTranscription import solveTranscription
-from .segment_graph_aux import *
+src = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+if not os.path.isdir(src):
+    raise ValueError("jumper directory cannot be found i.e. {}, is anything been moved?".format(src))
+sys.path.append(src)
+
+from bam_io import SpliceJunction
+from solveTranscription import solveTranscription
+from segment_graph_aux import *
 
 
 class mynode():
