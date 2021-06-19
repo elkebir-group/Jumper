@@ -16,7 +16,8 @@ from collections import Counter
 import math
 import itertools
 
-from jumper.segment_graph_aux import *
+#from jumper.segment_graph_aux import *
+from splice_graph_aux import *
 
 
 class solution():
