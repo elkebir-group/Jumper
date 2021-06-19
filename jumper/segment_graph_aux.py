@@ -15,6 +15,10 @@ def cluster_junctions(junc_counts, ref_length, threshold, width=6) -> Dict[int, 
 
     clusters = {}
 
+    if width == 0:
+        return junc_counts[junc_counts['count'] >= threshold].set_index('pos').to_dict()['count']
+        #return junc_counts.set_index('pos').to_dict()['count']
+
     kmer_count = {}
     for pos in junc_counts['pos']:
         kmer_count[pos] = junc_counts[(junc_counts['pos'] >= pos) &
@@ -244,6 +248,35 @@ def readGraphInput(breakpointFile, graphEdgeFile, phasingFile):
     return breakpoints, graph_edges, clustered_phasing
 
 
+def getGraphSkeletonWithoutClustering(df_sj_reads, ref, width, sj_threshold, nedges):
+
+    splice_edges = {}
+    adjacency_edges = {}
+
+    grouped_df = df_sj_reads.groupby(['5prime', '3prime']).sum()['count'].reset_index()
+    if sj_threshold > 0:
+        grouped_df = grouped_df[grouped_df['count'] >= sj_threshold]
+    if nedges < len(grouped_df) and nedges > 0:
+        grouped_df = grouped_df.sort_values('count', ascending=False)[:nedges]
+
+    breakpoints = set()
+    for _, row in grouped_df.iterrows():
+        start_pos = row['5prime']
+        end_pos = row['3prime']
+
+        breakpoints = breakpoints.union({start_pos, end_pos})
+
+        if (start_pos, end_pos) not in splice_edges.keys():
+            splice_edges[(start_pos, end_pos)] = {'splice': row['count']}
+        else:
+            splice_edges[(start_pos, end_pos)]['splice'] += row['count']
+
+    for pos in breakpoints:
+        adjacency_edges[(pos, pos)] = {ref.fetch(ref.references[0], pos-1, pos): 0}
+
+    return breakpoints, splice_edges, adjacency_edges
+
+
 def getGraphSkeleton(df_sj_reads, ref, width, sj_threshold):
 
     splice_edges = {}
@@ -257,6 +290,9 @@ def getGraphSkeleton(df_sj_reads, ref, width, sj_threshold):
     end_junction_clusters = cluster_junctions(df_sj_reads.groupby(['3prime']).sum()['count'].reset_index()
                                               .set_axis(['pos', 'count'], axis=1, inplace=False),
                                               ref.lengths[0], sj_threshold, width=width)
+
+    print(f"number of start junctions -- {len(start_junction_clusters)}")
+    print(f"number of end junctions -- {len(end_junction_clusters)}")
 
     # splice edges
     for _, row in df_sj_reads.iterrows():
