@@ -80,6 +80,7 @@ class SpliceJunction():
         self.min_snv_qual = min_snv_qual
         self.reference = pysam.FastaFile(reference)
         self.refLength = self.reference.lengths[0]
+        self.contig = self.reference.references[0]
 
     def identify_ORF(self, pos) -> str:
 
@@ -299,7 +300,7 @@ class SpliceJunction():
         count_5prime = Counter()
         count_3prime = Counter()
         count = 0
-        for read in bam.fetch(self.contig, 0, 29903):
+        for read in bam.fetch(self.contig, 0, self.refLength):
             sjs, _ = self.get_spliced_junctions(read)
             if len(sjs) > 0:
                 count_5prime.update([p5 for p5, _ in sjs])
@@ -383,38 +384,48 @@ class SpliceJunction():
     def get_sj_reads(self, bam_file, mutList=[], paired=False) -> pd.DataFrame:
         bam = pysam.AlignmentFile(bam_file, "rb")
         count_5prime_3prime_pair = Counter()
+        count = 0
+#        if paired:
+#            for r1, r2 in read_pair_generator(bam, f"{self.contig}:1-{self.refLength}"):
+#                #sjs1, ref_pos1 = self.get_spliced_junctions_muts(r1, mutList)
+#                #sjs2, _ = self.get_spliced_junctions_muts(r2, mutList)
+#                _, sjs1, ref_pos1, _ = self.get_read_segments_junctions(r1)
+#                _, sjs2, _, _ = self.get_read_segments_junctions(r2)
+#                strand = not r1.is_reverse
+#                if len(sjs1) > 0:
+#                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs1
+#                                                     if entryType == 'splice'])
+#                if len(sjs2) > 0:
+#                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs2
+#                                                     if entryType == 'splice'])
+#        else:
+#            for read in bam.fetch(self.contig, 0, self.refLength):
+#                if read.mapping_quality >= self.min_mapping_quality:
+#                    sjs, _ = self.get_spliced_junctions_muts(read, mutList)
+#                    #sjs, _ = self.get_spliced_junctions(read)
+#                    strand = not read.is_reverse
+#                    if len(sjs) > 0:
+#                        count += 1
+#                        count_5prime_3prime_pair.update([(p5, p3, strand)
+#                                                         for p5, p3, entryType in sjs
+#                                                         if entryType == 'splice'])
 
-        if paired:
-            for r1, r2 in read_pair_generator(bam, f"{self.contig}:1-{self.refLength}"):
-                #sjs1, ref_pos1 = self.get_spliced_junctions_muts(r1, mutList)
-                #sjs2, _ = self.get_spliced_junctions_muts(r2, mutList)
-                _, sjs1, ref_pos1, _ = self.get_read_segments_junctions(r1)
-                _, sjs2, _, _ = self.get_read_segments_junctions(r2)
-                strand = not r1.is_reverse
-                if len(sjs1) > 0:
-                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs1
-                                                     if entryType == 'splice'])
-                if len(sjs2) > 0:
-                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs2
-                                                     if entryType == 'splice'])
-        else:
-            for read in bam.fetch(self.contig, 0, 29903):
-                if read.mapping_quality >= self.min_mapping_quality:
-                    sjs, _ = self.get_spliced_junctions_muts(read, mutList)
-                    #sjs, _ = self.get_spliced_junctions(read)
-                    strand = not read.is_reverse
-                    if len(sjs) > 0:
-                        count_5prime_3prime_pair.update([(p5, p3, strand)
-                                                         for p5, p3, entryType in sjs
-                                                         if entryType == 'splice'])
-
+        print(f"{self.contig}\t{self.refLength}")
+        for read in bam.fetch(self.contig, 0, self.refLength):
+            if read.mapping_quality >= self.min_mapping_quality:
+                #sjs, _ = self.get_spliced_junctions_muts(read, mutList)
+                _, sjs, _, _ = self.get_read_segments_junctions(read)
+                strand = not read.is_reverse
+                if len(sjs) > 0:
+                    count += 1
+                    count_5prime_3prime_pair.update([(p5, p3, strand) for p5, p3, entryType in sjs if entryType == 'splice'])
+        print(f"count is {count}")
         data = []
         for (p5, p3, strand), count in count_5prime_3prime_pair.items():
             data.append([p5, p3, strand, count])
-        df = pd.DataFrame(
-            data, columns=["5prime", "3prime", "strand", "count"])
-        df["sgRNA_ref"] = df["3prime"].apply(lambda x: self.identify_ORF(
-            self.reference.fetch(self.contig, x, 29903).find("ATG") + x))
+        print(f"here")
+        df = pd.DataFrame(data, columns=["5prime", "3prime", "strand", "count"])
+        df["sgRNA_ref"] = df["3prime"].apply(lambda x: self.identify_ORF(self.reference.fetch(self.contig, x, self.refLength).find("ATG") + x))
         return df
 
     def get_phasing_reads(self, bam_file, splice_edges, width=0, paired=False):
@@ -422,8 +433,9 @@ class SpliceJunction():
         phasing_reads = Counter()
         #phasing_reads = {}
         reject_count = 0
+        print(f"ref legnth is {self.refLength}")
         if paired:
-            mean_read_len = IncrementalAverage()
+            #mean_read_len = IncrementalAverage()
             for reads in read_pair_generator(bam, f"{self.contig}:1-{self.refLength}"):
                 s_plus = set()
                 s_minus = set()
@@ -459,34 +471,32 @@ class SpliceJunction():
         else:
             for read in bam.fetch(self.contig, 0, self.refLength):
                 if read.mapping_quality < self.min_mapping_quality:
+                    reject_count += 1
                     continue
 
                 s_plus = set()
                 s_minus = set()
 
-                for read in reads:
-                    read_seg, sjs, _ = self.get_read_segments(read)
+                read_seg, sjs, _ = self.get_read_segments(read)
 
-                    for (left, right) in splice_edges:
-                        for (_5prime, _3prime) in read_seg:
-                            if (left < _3prime - width) and (right > _5prime):
-                                s_minus.add((left, right))
-                                break
+                for (left, right) in splice_edges:
+                    for (_5prime, _3prime) in read_seg:
+                        if (left < _3prime - width) and (right > _5prime):
+                            s_minus.add((left, right))
+                            break
 
-                        for (_5prime, _3prime, _) in sjs:
-                            if ((abs(left + float(width)/2 - _5prime) <= float(width)/2) and
-                                    (abs(right + float(width)/2 - _3prime) <= float(width)/2)):
-                                s_plus.add((left, right))
-                                break
+                    for (_5prime, _3prime, _) in sjs:
+                        if ((abs(left + float(width)/2 - _5prime) <= float(width)/2) and (abs(right + float(width)/2 - _3prime) <= float(width)/2)):
+                            s_plus.add((left, right))
+                            break
 
                 if len(s_plus.intersection(s_minus)) == 0:
-                    phasing_reads[tuple(
-                        [tuple(sorted(s_plus)), tuple(sorted(s_minus))])] += 1
+                    phasing_reads[tuple([tuple(sorted(s_plus)), tuple(sorted(s_minus))])] += 1
                 else:
                     reject_count += 1
 
         print(f"rejected {reject_count} reads")
-        print(f"average read length: {mean_read_len.mean}")
+        #print(f"average read length: {mean_read_len.mean}")
         # return dict(count_phasing_reads)
         return dict(phasing_reads)
 
@@ -533,7 +543,7 @@ class SpliceJunction():
         df = pd.DataFrame(
             data, columns=["5prime", "3prime", "strand", "count"])
         df["sgRNA_ref"] = df["3prime"].apply(lambda x: self.identify_ORF(
-            self.reference.fetch(self.contig, x, 29903).find("ATG") + x))
+            self.reference.fetch(self.contig, x, self.refLength).find("ATG") + x))
         return df, phasing
 
     def save_all_sj_reads(self, bam_file, output_fname):
