@@ -25,8 +25,11 @@ rep:
   - "04"
   - "05"
 
-samplingFrequency: 10
+#samplingFrequency: 11
+#samplingFrequency: 15
+samplingFrequency: 16
 timelimit: 1800
 nthreads: 1
 sj_threshold: 120
 ntranscripts: 50
+
