@@ -123,7 +123,7 @@ class solveTranscription():
         while iter_count <= self.max_iter or flag in [1, 2, 3]:
 
             model = gp.Model(f"solveGreedyTranscription_{kdx}")
-            if self.threads > 1:
+            if self.threads > 0:
                 model.setParam(gp.GRB.Param.Threads, self.threads)
             if self.timelimit:
                 model.setParam(gp.GRB.Param.TimeLimit, self.timelimit)
@@ -160,7 +160,7 @@ class solveTranscription():
                     u2 = edge2.left.right
                     v2 = edge2.right.left
                     # if (u1 <= u2 and v1 >= u2) or (u2 <= u1 and v2 >= u1):
-                    if (u1 <= u2 and v1 > u2) and (idx1 != idx2):
+                    if (u1 <= u2 and v1 >= u2) and (idx1 != idx2):
                         for pid in range(npaths):
                             model.addConstr(w[idx1, pid] + w[idx2, pid] <= 1)
 
@@ -368,9 +368,12 @@ class solveTranscription():
                 new_path_spliceEdges.append(edge)
                 nspliceEdges += 1
 
-        # print('+'*50)
-        # print(f"adding {2**nspliceEdges} new paths")
-        # print('+'*50)
+        #print('+'*50)
+        #print(f"solW is {solW}")
+        #print(f"{[x.name for x in new_path_spliceEdges]}")
+        #print(f"{[(x.left.right, x.right.left) for x in new_path_spliceEdges]}")
+        #print(f"adding {2**nspliceEdges} new paths")
+        #print('+'*50)
 
         npaths_added = 0
         for case in range(2**nspliceEdges):
@@ -380,7 +383,8 @@ class solveTranscription():
             for idx, edge in enumerate(new_path_spliceEdges):
                 if expansionIndex[idx] == '1':
                     curr_path_spliceEdges.append(edge)
-
+            #print(f"{[x.name for x in curr_path_spliceEdges]}")
+            #print(f"{[(x.left.right, x.right.left) for x in curr_path_spliceEdges]}")
             curr_path = self.graph.stitchPath(curr_path_spliceEdges)
             if curr_path not in self.chosen_paths:
                 self.chosen_paths.append(curr_path)
@@ -532,7 +536,7 @@ class solveTranscription():
                 u2 = edge2.left.right
                 v2 = edge2.right.left
                 # if (u1 <= u2 and v1 >= u2) or (u2 <= u1 and v2 >= u1):
-                if (u1 <= u2 and v1 > u2) and (idx1 != idx2):
+                if (u1 <= u2 and v1 >= u2) and (idx1 != idx2):
                     for pathIndex in range(self.numPaths):
                         model.addConstr(w[idx1, pathIndex] +
                                         w[idx2, pathIndex] <= 1)
