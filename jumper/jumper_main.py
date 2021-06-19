@@ -14,9 +14,9 @@ import statistics
 import math
 from typing import Dict, Tuple, List
 
-from .bam_io import SpliceJunction
-from .solveTranscription import solveTranscription
-from .segment_graph_aux import *
+from bam_io import SpliceJunction
+from solveTranscription import solveTranscription
+from segment_graph_aux import *
 
 
 class mynode():
@@ -652,11 +652,17 @@ def main(args):
         else:
             df_sj_reads = SJcounter.get_sj_reads(args.bam, paired=args.paired)
 
-        breakpoints, splice_edges, adjacency_edges = getGraphSkeleton(
-            df_sj_reads, ref, args.width, args.sj_threshold)
+        if args.width == 0:
+            breakpoints, splice_edges, adjacency_edges = getGraphSkeletonWithoutClustering(df_sj_reads, ref, args.width, args.sj_threshold, args.nedges)
+        else:
+            breakpoints, splice_edges, adjacency_edges = getGraphSkeleton(df_sj_reads, ref, args.width, args.sj_threshold)
+        #breakpoints, splice_edges, adjacency_edges = getGraphSkeleton(df_sj_reads, ref, args.width, args.sj_threshold)
 
     # for idx, (left, right) in enumerate(splice_edges.keys()):
     #     print(f"{idx} -- {left} -- {right}")
+    if args.outputCSV:
+        df_sj_reads.to_csv(args.outputCSV, sep='\t', index=False)
+
 
     if args.inputPhasing:
         phasing_reads = readPhasing(args.inputPhasing)
@@ -669,9 +675,6 @@ def main(args):
         print(f"number of phasing reads -- {len(phasing_reads)}")
         print(
             f"total number of reads -- {sum([val for val in phasing_reads.values()])}")
-
-    if args.outputCSV:
-        df_sj_reads.to_csv(args.outputCSV, sep='\t', index=False)
 
     sorted_breakpoints = sorted(list(breakpoints))
     if args.outputBreakpoints:
@@ -736,7 +739,7 @@ def get_options():
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--bam", type=str, help="aligned bam file")
     parser.add_argument("--paired", type=str2bool, default=True,
-                        help="is the bam file paired-end [True]")
+                        help="is the bam file paired-end (True/False) [True]")
     parser.add_argument("-f", "--fasta", type=str,
                         help="fasta file", required=True)
     parser.add_argument("-k", type=int, dest='numPaths',
@@ -746,11 +749,12 @@ def get_options():
     parser.add_argument("--min-mapping-qual", type=int,
                         help="minimum mapping quality [20]", default=20)
     parser.add_argument("-w", "--width", type=int,
-                        help="spliced junction width parameter [6]", default=6)
+                        help="spliced junction width parameter [0]", default=0)
     parser.add_argument("--samplingFrequency", type=int,
                         help="number of sampling points for the likelihood function", default=10)
     parser.add_argument("--sj_threshold", type=int,
                         help="minimum support for splicing junction [20]", default=20)
+    parser.add_argument("-n", "--nedges", type=int, help="number of splice edges in segment graph (-1 for unconstrained) [-1]", default=-1)
     parser.add_argument("--phasing_threshold", type=int,
                         help='coverage threshold for transcripts [0]', default=0)
     parser.add_argument("--greedy", type=str2bool,
@@ -796,7 +800,6 @@ def get_options():
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
 
     args.vcf = None
-    args.paired = True
 
     return args
 
