@@ -28,6 +28,8 @@
 <a name="installation"></a>
 ## Installation
 
+Installation time: 5 minutes.
+
 <a name="conda-install"></a>
 ### Using conda (recommended)
 
@@ -175,5 +177,7 @@ The ground transcripts are written in `../data/sample_transcripts.out`.
 
     $ jumper --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
   
-The reconstructed transcripts are written to `../data/sample_decomposition.out`.
+The reconstructed transcripts are written to [`../data/sample_decomposition.out`](data/sample_decomposition.out).
+
+This will take less than 1 minute to complete on a typical desktop computer.
 
