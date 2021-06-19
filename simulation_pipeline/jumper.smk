@@ -1,4 +1,5 @@
 configfile: "config.yaml"
+#configfile: "test.yaml"
 
 rule all:
     input:
@@ -36,7 +37,9 @@ rule jumper:
         nthreads=config["nthreads"],
         sj_threshold=config["sj_threshold"]
     shell:
-        "jumper --fasta {params.refFile} --bam {input.bam} "
+        #"jumper --fasta {params.refFile} --bam {input.bam} "
+        #"python jumper.py --fasta {params.refFile} --bam {input.bam} "
+        "python ../jumper/jumper_main.py --fasta {params.refFile} --bam {input.bam} "
         "--outputBreakpoints {output.breakpoints} "
         "--outputEdges {output.edges} "
         "--outputCSV {output.sj_reads} "
