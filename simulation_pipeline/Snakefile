@@ -1,3 +1,4 @@
+#
 configfile: "config.yaml"
 
 rule all:
@@ -21,7 +22,8 @@ rule simulate_transcript:
         transcriptReadCounts="transcripts/{sense}_{seed}_readcounts.out",
         phasingFile="transcripts/{sense}_{seed}_phasing.out",
     shell:
-        "jumper_simulate --npaths {params.npaths} --seed {wildcards.seed} --sense {wildcards.sense} "
+        #"jumper_simulate --npaths {params.npaths} --seed {wildcards.seed} --sense {wildcards.sense} "
+        "python ../jumper/jumper_simulate.py --npaths {params.npaths} --seed {wildcards.seed} --sense {wildcards.sense} "
         "--inputBreakpoints {input.breakpointFile} --nreads {params.nreads} "
         "--inputEdges {input.edgeFile} "
         "--fasta {params.refFile} "
