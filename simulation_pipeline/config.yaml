@@ -30,6 +30,7 @@ rep:
 samplingFrequency: 16
 timelimit: 1800
 nthreads: 1
-sj_threshold: 120
+#sj_threshold: 120
+sj_threshold: 100
 ntranscripts: 50
 
