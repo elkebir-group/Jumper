@@ -83,29 +83,31 @@ The input for Jumper is a bam file containing the sequencing data and a fasta fi
 The output is similar to a fasta file format, where each transcript name is followed by the edges in the corresponding path in the segment graph (see `data/sample_transcripts.out` for an example).
 
 ### Arguments
-    usage: jumper [-h] [-b BAM] [--paired PAIRED] -f FASTA [-k NUMPATHS]
-                  [--min-base-qual MIN_BASE_QUAL]
-                  [--min-mapping-qual MIN_MAPPING_QUAL] [-w WIDTH]
-                  [--samplingFrequency SAMPLINGFREQUENCY]
-                  [--sj_threshold SJ_THRESHOLD]
-                  [--phasing_threshold PHASING_THRESHOLD] [--greedy GREEDY]
-                  [--outputCSV OUTPUTCSV] [--outputPhasing OUTPUTPHASING]
-                  [--inputCSV INPUTCSV] [--inputPhasing INPUTPHASING]
-                  [--inputBreakpoints INPUTBREAKPOINTS]
-                  [--inputEdges INPUTEDGES] [--outputGraph OUTPUTGRAPH]
-                  [--outputDOT OUTPUTDOT]
-                  [--outputTranscripts OUTPUTTRANSCRIPTS]
-                  [--outputBreakpoints OUTPUTBREAKPOINTS]
-                  [--outputEdges OUTPUTEDGES]
-                  [--outputDecomposition OUTPUTDECOMPOSITION]
-                  [--outputMatching OUTPUTMATCHING] [--outputGTF OUTPUTGTF]
-                  [--report REPORT] [--noverbose] [--threads THREADS]
-                  [--timelimit TIMELIMIT] [--maxIter MAXITER]
+    usage: jumper_main.py [-h] [-b BAM] [--paired PAIRED] -f FASTA [-k NUMPATHS]
+                          [--min-base-qual MIN_BASE_QUAL]
+                          [--min-mapping-qual MIN_MAPPING_QUAL] [-w WIDTH]
+                          [--samplingFrequency SAMPLINGFREQUENCY]
+                          [--sj_threshold SJ_THRESHOLD] [-n NEDGES]
+                          [--phasing_threshold PHASING_THRESHOLD]
+                          [--greedy GREEDY] [--outputCSV OUTPUTCSV]
+                          [--outputPhasing OUTPUTPHASING] [--inputCSV INPUTCSV]
+                          [--inputPhasing INPUTPHASING]
+                          [--inputBreakpoints INPUTBREAKPOINTS]
+                          [--inputEdges INPUTEDGES] [--outputGraph OUTPUTGRAPH]
+                          [--outputDOT OUTPUTDOT]
+                          [--outputTranscripts OUTPUTTRANSCRIPTS]
+                          [--outputBreakpoints OUTPUTBREAKPOINTS]
+                          [--outputEdges OUTPUTEDGES]
+                          [--outputDecomposition OUTPUTDECOMPOSITION]
+                          [--outputMatching OUTPUTMATCHING]
+                          [--outputGTF OUTPUTGTF] [--report REPORT] [--noverbose]
+                          [--threads THREADS] [--timelimit TIMELIMIT]
+                          [--maxIter MAXITER]
 
     optional arguments:
       -h, --help            show this help message and exit
       -b BAM, --bam BAM     aligned bam file
-      --paired PAIRED       is the bam file paired-end [True]
+      --paired PAIRED       is the bam file paired-end (True/False) [True]
       -f FASTA, --fasta FASTA
                             fasta file
       -k NUMPATHS           number of paths for the flow decomposition
@@ -114,11 +116,14 @@ The output is similar to a fasta file format, where each transcript name is foll
       --min-mapping-qual MIN_MAPPING_QUAL
                             minimum mapping quality [20]
       -w WIDTH, --width WIDTH
-                            spliced junction width parameter [6]
+                            spliced junction width parameter [0]
       --samplingFrequency SAMPLINGFREQUENCY
                             number of sampling points for the likelihood function
       --sj_threshold SJ_THRESHOLD
                             minimum support for splicing junction [20]
+      -n NEDGES, --nedges NEDGES
+                            number of splice edges in segment graph (-1 for
+                            unconstrained) [-1]
       --phasing_threshold PHASING_THRESHOLD
                             coverage threshold for transcripts [0]
       --greedy GREEDY       set greedy flag to TRUE
@@ -175,7 +180,7 @@ The ground transcripts are written in `../data/sample_transcripts.out`.
 
 #### Reconstruct the transcripts
 
-    $ jumper --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
+    $ jumper_main --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
   
 The reconstructed transcripts are written to [`../data/sample_decomposition.out`](data/sample_decomposition.out).
 
