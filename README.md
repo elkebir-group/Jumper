@@ -33,7 +33,7 @@ Installation time: 5 minutes.
 <a name="conda-install"></a>
 ### Using conda (recommended)
 
-1. Download the [released package](https://github.com/elkebir-group/Jumper/releases) of the latest version: `jumper-0.1.0.tar.bz2`.
+1. Download the [released package](https://github.com/elkebir-group/Jumper/releases) of the latest version: `jumper-0.1.1.tar.bz2`.
 2. Create a new conda environment named "jumper" and install dependencies:
    * If you want to run the simulation pipeline, please run
 
@@ -51,7 +51,7 @@ Installation time: 5 minutes.
 4. Install the package into current environment "jumper":
 
     ```bash
-    conda install jumper-0.1.0.tar.bz2
+    conda install jumper-0.1.1.tar.bz2
     ```
 
 **Note:** Make sure you have a gurobi license before running jumper. If you are an academic user, you can get a free license: <https://www.gurobi.com/academia/academic-program-and-licenses/>
@@ -180,7 +180,7 @@ The ground transcripts are written in `../data/sample_transcripts.out`.
 
 #### Reconstruct the transcripts
 
-    $ jumper_main --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
+    $ jumper --inputBreakpoints ../data/sampleBreakpoints.out --inputEdges ../data/sampleEdges.out --inputPhasing ../data/sample_phasing.out --outputDecomposition ../data/sample_decomposition.out -k 50 -f ../data/reference.fasta --greedy True --outputMatching ../data/sample_matching.out > ../data/sample.log
   
 The reconstructed transcripts are written to [`../data/sample_decomposition.out`](data/sample_decomposition.out).
 
