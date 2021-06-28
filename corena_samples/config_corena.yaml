@@ -1,0 +1,41 @@
+ref: "../data/reference.fasta"
+ref_dir: "../data/reference"
+read_length: 100
+
+reference:
+    SRR1942956: 'reference/NC_004718.fasta'
+    SRR1942957: 'reference/NC_004718.fasta'
+    SRR10357372: 'reference/NC_019843.fasta'
+    SRR10357373: 'reference/NC_019843.fasta'
+    SRR10357374: 'reference/NC_019843.fasta'
+
+sampleList: "sampleList.txt"
+
+samplingFrequency: 16
+timelimit: 1800
+nthreads: 1
+sj_threshold: 500
+ntranscripts: 50
+
+nedges: 35
+
+is_paired:
+    SRR1942956: true
+    SRR1942957: true
+    SRR10357372: true
+    SRR10357373: true
+    SRR10357374: true
+
+threshold:
+    SRR1942956: 100
+    SRR1942957: 100
+    SRR10357372: 100
+    SRR10357373: 100
+    SRR10357374: 100
+
+used:
+    - SRR10357372
+    - SRR10357373
+    - SRR10357374
+    - SRR1942956
+    - SRR1942957
