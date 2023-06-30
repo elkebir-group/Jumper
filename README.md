@@ -5,6 +5,8 @@
 (b) Next generation sequencing will produce an alignment <img src="https://latex.codecogs.com/gif.latex?\mathcal{R}" /> with two types of aligned reads: unphased reads that map to a contiguous genomic region (black) and phased reads that map to distinct genomic regions (red).
 (c) From <img src="https://latex.codecogs.com/gif.latex?\mathcal{R}" /> we obtain the segment graph <img src="https://latex.codecogs.com/gif.latex?G" />, a directed acyclic graph with a unique Hamiltonian path. Jumper solves the Discontinuous Transciption Assembly problem to infer <img src="https://latex.codecogs.com/gif.latex?\mathcal{T}" /> and <img src="https://latex.codecogs.com/gif.latex?\mathbf{c}" /> with maximum likelihood.
 
+More details about the problem formulation and the algorithm can be found here: https://www.nature.com/articles/s41467-021-26944-y
+
 ## Contents
 
   1. [Pre-requisites](#pre-requisites)
